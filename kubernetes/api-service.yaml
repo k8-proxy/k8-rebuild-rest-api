@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: rebuild-rest-api
+  name: rebuild-rest-api
+spec:
+  selector:
+    matchLabels:
+      app: rebuild-rest-api
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: rebuild-rest-api
+    spec:
+      tolerations:
+      - key: "key"
+        operator: "Equal"
+        value: "monitoring"
+        effect: "NoSchedule"  
+      containers:
+      - name: rebuild-rest-api
+        image: ggrig/sow-rest-api:0.01
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 500m
+            memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: rebuild-rest-api
+  name: rebuild-rest-api
+  labels:
+    service: rebuild-rest-api
+spec:
+  selector:
+    app: rebuild-rest-api
+  ports:
+    - name: http
+      port:  80
+  type: ClusterIP      
