@@ -1,5 +1,30 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS proxy-base
+RUN apt-get update \
+    && apt-get install -y --allow-unauthenticated \
+        libc6-dev \
+        libgdiplus \
+        libx11-dev \
+     && rm -rf /var/lib/apt/lists/*
+WORKDIR /cloud-proxy-app
+
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS proxy-build
+WORKDIR /proxy-src
+COPY ["icap/cloud-proxy-app/source/cloud-proxy-app.csproj", "icap/cloud-proxy-app/source/"]
+RUN dotnet restore "icap/cloud-proxy-app/source/cloud-proxy-app.csproj"
+COPY . .
+RUN git submodule update --init --recursive || true
+WORKDIR "/proxy-src/icap/cloud-proxy-app/source"
+RUN dotnet build "cloud-proxy-app.csproj" -c Release -o /cloud-proxy-app/build
+
+FROM proxy-build AS proxy-publish
+RUN dotnet publish "cloud-proxy-app.csproj" -c Release -o /cloud-proxy-app/publish
+
+FROM proxy-base AS proxy-final
+WORKDIR /cloud-proxy-app
+COPY --from=proxy-publish /cloud-proxy-app/publish .
+
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 RUN apt-get update \
     && apt-get install -y --allow-unauthenticated \
@@ -31,38 +56,4 @@ RUN dotnet publish "Glasswall.CloudSdk.AWS.Rebuild.csproj" -c Release -o /app/pu
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-
-FROM base AS ms-package-signing
-RUN  apt-get update \
-  && apt-get install -y wget \
-  && rm -rf /var/lib/apt/lists/*
-  
-RUN wget https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-RUN dpkg -i packages-microsoft-prod.deb
-
-FROM ms-package-signing AS dotnet-sdk 
-RUN apt-get install -y apt-transport-https && \
-  apt-get update && \
-  apt-get install -y dotnet-sdk-3.1
-  
-FROM dotnet-sdk AS dotnet-package-restore
-COPY ./icap/cloud-proxy-app/cloud-proxy-app.sln /src/cloud-proxy-app/cloud-proxy-app.sln 
-COPY ./icap/cloud-proxy-app/source/cloud-proxy-app.csproj /src/cloud-proxy-app/source/cloud-proxy-app.csproj
-COPY ./icap/cloud-proxy-app/test/cloud-proxy-app.test.csproj /src/cloud-proxy-app/test/cloud-proxy-app.test.csproj
-RUN dotnet restore /src/cloud-proxy-app/cloud-proxy-app.sln 
-
-FROM dotnet-package-restore AS dotnet-builder
-COPY ./icap/cloud-proxy-app /src/cloud-proxy-app
-RUN dotnet publish -c Release /src/cloud-proxy-app/cloud-proxy-app.sln 
-
-FROM ms-package-signing AS dotnet-runtime
-RUN apt-get install -y apt-transport-https && \
-  apt-get update && \
-  apt-get install -y dotnet-runtime-3.1
-    
-FROM dotnet-runtime
-COPY --from=dotnet-builder /src/cloud-proxy-app/source/bin/Release/netcoreapp3.1/publish /usr/local/bin
-
-COPY ./kubernetes/testdata/* /
-
 ENTRYPOINT ["dotnet", "Glasswall.CloudSdk.AWS.Rebuild.dll"]
