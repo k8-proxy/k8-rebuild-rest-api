@@ -31,6 +31,25 @@ spec:
           requests:
             cpu: 500m
             memory: 512Mi
+        env:
+        - name: ProcessingTimeoutDuration
+          value: "00:01:00"
+        - name: OriginalStorePath
+          value: "/var/source"
+        - name: RebuiltStorePath
+          value: "/var/target"
+        - name: ExchangeName
+          value: "adaptation-exchange"
+        - name: RequestQueueName
+          value: "adaptation-request-queue"
+        - name: OutcomeQueueName
+          value: "amq.rabbitmq.reply-to"
+        - name: RequestMessageName
+          value: "adaptation-request"
+        - name: MBHostName
+          value: "rabbitmq-service"
+        - name: MBPort
+          value: 5672
 ---
 apiVersion: v1
 kind: Service

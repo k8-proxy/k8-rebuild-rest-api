@@ -63,4 +63,6 @@ RUN apt-get install -y apt-transport-https && \
 FROM dotnet-runtime
 COPY --from=dotnet-builder /src/cloud-proxy-app/source/bin/Release/netcoreapp3.1/publish /usr/local/bin
 
+COPY ./kubernetes/testdata/* /
+
 ENTRYPOINT ["dotnet", "Glasswall.CloudSdk.AWS.Rebuild.dll"]
