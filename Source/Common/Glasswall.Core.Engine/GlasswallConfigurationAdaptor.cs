@@ -52,7 +52,7 @@ namespace Glasswall.Core.Engine
                     embedded_images = contentManagementFlags.PdfContentManagement.EmbeddedImages.GetValueOrDefault().ToGlasswallConfigurationContentManagementFlag(),
                     javascript = contentManagementFlags.PdfContentManagement.Javascript.GetValueOrDefault().ToGlasswallConfigurationContentManagementFlag(),
                     metadata = contentManagementFlags.PdfContentManagement.Metadata.GetValueOrDefault().ToGlasswallConfigurationContentManagementFlag(),
-                    watermark = contentManagementFlags.PdfContentManagement.Watermark.GetValueOrDefault().ToGlasswallConfigurationContentManagementFlag()
+                    watermark = contentManagementFlags.PdfContentManagement.Watermark
                 },
                 pptConfig = new pptConfig
                 {
