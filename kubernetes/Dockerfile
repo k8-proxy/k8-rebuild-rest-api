@@ -1,30 +1,5 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS proxy-base
-RUN apt-get update \
-    && apt-get install -y --allow-unauthenticated \
-        libc6-dev \
-        libgdiplus \
-        libx11-dev \
-     && rm -rf /var/lib/apt/lists/*
-WORKDIR /cloud-proxy-app
-
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS proxy-build
-WORKDIR /proxy-src
-COPY ["icap/cloud-proxy-app/source/cloud-proxy-app.csproj", "icap/cloud-proxy-app/source/"]
-RUN dotnet restore "icap/cloud-proxy-app/source/cloud-proxy-app.csproj"
-COPY . .
-RUN git submodule update --init --recursive || true
-WORKDIR "/proxy-src/icap/cloud-proxy-app/source"
-RUN dotnet build "cloud-proxy-app.csproj" -c Release -o /cloud-proxy-app/build
-
-FROM proxy-build AS proxy-publish
-RUN dotnet publish "cloud-proxy-app.csproj" -c Release -o /cloud-proxy-app/publish
-
-FROM proxy-base AS proxy-final
-WORKDIR /cloud-proxy-app
-COPY --from=proxy-publish /cloud-proxy-app/publish .
-
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 RUN apt-get update \
     && apt-get install -y --allow-unauthenticated \
@@ -48,12 +23,22 @@ RUN dotnet restore "Source/Service/Glasswall.CloudSdk.AWS.Rebuild.csproj"
 COPY . .
 RUN git submodule update --init --recursive || true
 WORKDIR "/src/Source/Service"
-RUN dotnet build "Glasswall.CloudSdk.AWS.Rebuild.csproj" -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish "Glasswall.CloudSdk.AWS.Rebuild.csproj" -c Release -o /app/publish
 
+WORKDIR /proxy-src
+COPY ["icap/cloud-proxy-app/source/cloud-proxy-app.csproj", "icap/cloud-proxy-app/source/"]
+RUN dotnet restore "icap/cloud-proxy-app/source/cloud-proxy-app.csproj"
+COPY . .
+RUN git submodule update --init --recursive || true
+WORKDIR "/proxy-src/icap/cloud-proxy-app/source"
+RUN dotnet build "cloud-proxy-app.csproj" -c Release -o /proxy/build
+
+
 FROM base AS final
+WORKDIR /proxy
+COPY --from=publish /proxy/build .
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Glasswall.CloudSdk.AWS.Rebuild.dll"]

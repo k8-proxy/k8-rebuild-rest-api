@@ -23,7 +23,6 @@ RUN dotnet restore "Source/Service/Glasswall.CloudSdk.AWS.Rebuild.csproj"
 COPY . .
 RUN git submodule update --init --recursive || true
 WORKDIR "/src/Source/Service"
-RUN dotnet build "Glasswall.CloudSdk.AWS.Rebuild.csproj" -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish "Glasswall.CloudSdk.AWS.Rebuild.csproj" -c Release -o /app/publish
