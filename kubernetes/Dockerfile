@@ -31,14 +31,19 @@ WORKDIR /proxy-src
 COPY ["icap/cloud-proxy-app/source/cloud-proxy-app.csproj", "icap/cloud-proxy-app/source/"]
 RUN dotnet restore "icap/cloud-proxy-app/source/cloud-proxy-app.csproj"
 COPY . .
-RUN git submodule update --init --recursive || true
 WORKDIR "/proxy-src/icap/cloud-proxy-app/source"
 RUN dotnet build "cloud-proxy-app.csproj" -c Release -o /proxy/build
 
 
 FROM base AS final
+
+RUN mkdir /var/source
+RUN mkdir /var/target
+COPY kubernetes/testdata/* /var/source
+
 WORKDIR /proxy
 COPY --from=publish /proxy/build .
 WORKDIR /app
 COPY --from=publish /app/publish .
+
 ENTRYPOINT ["dotnet", "Glasswall.CloudSdk.AWS.Rebuild.dll"]
