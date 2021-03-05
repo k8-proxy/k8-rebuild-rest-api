@@ -20,6 +20,12 @@
     - The file is rebuilt with the default content management flags for the file type.
     - Protected file is returned.
 
+## Environment Variables
+These are static configuration that is used by the app to connect with other components.
+
+- AWS_ACCESS_KEY_ID : access key for AWS Account being used for s3.
+- AWS_SECRET_ACCESS_KEY : secret key for AWS Account being used for s3.
+
 ## Deployment
 There are 2 ways to deploy K8 Rebuild Rest API; docker and runtime. Below are instructions for both docker and runtime deployments.
 
