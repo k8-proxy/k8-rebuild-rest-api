@@ -21,7 +21,7 @@ spec:
         effect: "NoSchedule"  
       containers:
       - name: rebuild-rest-api
-        image: ggrig/sow-rest-api:0.01
+        image: ggrig/k8s-rest-api:0.01
         ports:
         - containerPort: 80
         resources:
