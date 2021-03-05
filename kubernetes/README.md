@@ -15,9 +15,8 @@ Run the following command sequence in the SSH terminal:
 
 ``` 
     wget https://raw.githubusercontent.com/k8-proxy/k8-rebuild-rest-api/issue_15_use_sow_cdr_engine/kubernetes/api-service.yaml
-    kubectl create ns rebuild-rest-api
-    kubectl apply -n rebuild-rest-api -f api-service.yaml
-    kubectl port-forward -n rebuild-rest-api --address 0.0.0.0 service/rebuild-rest-api 8888:80
+    kubectl apply -n icap-adaptation -f api-service.yaml
+    kubectl port-forward -n icap-adaptation --address 0.0.0.0 service/rebuild-rest-api 8888:80
 ```
 
 Send file rebuild request to ```http://<IP address of the VM>:8888/api/rebuild/file```
