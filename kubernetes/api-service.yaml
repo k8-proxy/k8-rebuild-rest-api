@@ -19,9 +19,16 @@ spec:
         operator: "Equal"
         value: "monitoring"
         effect: "NoSchedule"  
+      volumes:
+        - name: source-vol
+          persistentVolumeClaim:
+            claimName: glasswallsource-pvc
+        - name: target-vol
+          persistentVolumeClaim:
+            claimName: glasswalltarget-pvc
       containers:
       - name: rebuild-rest-api
-        image: ggrig/k8s-rest-api:0.01
+        image: ggrig/k8s-rest-api:0.02
         ports:
         - containerPort: 80
         resources:
@@ -31,6 +38,11 @@ spec:
           requests:
             cpu: 500m
             memory: 512Mi
+        volumeMounts:
+          - mountPath: "/var/source"
+            name: source-vol
+          - mountPath: "/var/target"
+            name: target-vol
         env:
         - name: ProcessingTimeoutDuration
           value: "00:01:00"

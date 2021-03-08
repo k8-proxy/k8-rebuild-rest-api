@@ -37,9 +37,8 @@ RUN dotnet build "cloud-proxy-app.csproj" -c Release -o /proxy/build
 
 FROM base AS final
 
-RUN mkdir /var/source
-RUN mkdir /var/target
-COPY kubernetes/testdata/* /var/source
+RUN mkdir /var/testdata
+COPY kubernetes/testdata/* /var/testdata
 
 WORKDIR /proxy
 COPY --from=publish /proxy/build .
