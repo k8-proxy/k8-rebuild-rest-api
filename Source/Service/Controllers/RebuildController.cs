@@ -203,11 +203,10 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
+                AmazonS3Uri amazonS3Uri = new AmazonS3Uri(presignedURL);
                 AmazonS3Client amazonS3Client = new AmazonS3Client(Environment.GetEnvironmentVariable(Constants.EnvironmentVariables.AWS_ACCESS_KEY_ID),
                                                                    Environment.GetEnvironmentVariable(Constants.EnvironmentVariables.AWS_SECRET_ACCESS_KEY),
-                                                                   RegionEndpoint.EUWest1);
-
-                AmazonS3Uri amazonS3Uri = new AmazonS3Uri(presignedURL);
+                                                                   RegionEndpoint.GetBySystemName(amazonS3Uri.Region.SystemName));
                 GetObjectRequest request = new GetObjectRequest()
                 {
                     BucketName = amazonS3Uri.Bucket,
@@ -311,10 +310,10 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
+                AmazonS3Uri amazonS3Uri = new AmazonS3Uri(sourcePresignedURL);
                 AmazonS3Client amazonS3Client = new AmazonS3Client(Environment.GetEnvironmentVariable(Constants.EnvironmentVariables.AWS_ACCESS_KEY_ID),
                                                                    Environment.GetEnvironmentVariable(Constants.EnvironmentVariables.AWS_SECRET_ACCESS_KEY),
-                                                                   RegionEndpoint.EUWest1);
-                AmazonS3Uri amazonS3Uri = new AmazonS3Uri(sourcePresignedURL);
+                                                                   RegionEndpoint.GetBySystemName(amazonS3Uri.Region.SystemName));
                 GetObjectRequest request = new GetObjectRequest()
                 {
                     BucketName = amazonS3Uri.Bucket,
@@ -492,10 +491,10 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
                 }
 
                 _zipUtility.CreateZipFile($"{protectedZipFolderPath}.{FileType.Zip}", null, protectedZipFolderPath);
+                AmazonS3Uri amazonS3Uri = new AmazonS3Uri(targetPresignedURL);
                 AmazonS3Client amazonS3Client = new AmazonS3Client(Environment.GetEnvironmentVariable(Constants.EnvironmentVariables.AWS_ACCESS_KEY_ID),
                                                                    Environment.GetEnvironmentVariable(Constants.EnvironmentVariables.AWS_SECRET_ACCESS_KEY),
-                                                                   RegionEndpoint.EUWest1);
-                AmazonS3Uri amazonS3Uri = new AmazonS3Uri(targetPresignedURL);
+                                                                   RegionEndpoint.GetBySystemName(amazonS3Uri.Region.SystemName));
                 using (Stream fs = System.IO.File.OpenRead($"{protectedZipFolderPath}.{FileType.Zip}"))
                 {
                     AmazonS3Uri amazonS3TargetUri = new AmazonS3Uri(targetPresignedURL);
