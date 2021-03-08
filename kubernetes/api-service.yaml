@@ -28,7 +28,7 @@ spec:
             claimName: glasswalltarget-pvc
       containers:
       - name: rebuild-rest-api
-        image: ggrig/k8s-rest-api:0.02
+        image: ggrig/k8s-rest-api:0.03
         ports:
         - containerPort: 80
         resources:
