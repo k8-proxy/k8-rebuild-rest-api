@@ -74,6 +74,7 @@ spec:
   selector:
     app: rebuild-rest-api
   ports:
-    - name: http
+    - name: api-port
       port:  80
+      targetPort: 8888
   type: ClusterIP      
