@@ -77,4 +77,4 @@ spec:
     - name: api-port
       port:  80
       targetPort: 8888
-  type: ClusterIP      
+  type: LoadBalancer
