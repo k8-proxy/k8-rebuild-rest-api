@@ -29,7 +29,13 @@ namespace Glasswall.CloudSdk.AWS.Rebuild
             services.AddSingleton<IMetricService, MetricService>();
             services.AddSingleton<IGlasswallVersionService, GlasswallVersionService>();
             services.AddSingleton<IFileTypeDetector, FileTypeDetector>();
-            services.AddSingleton<IFileProtector, FileProxyProtector>();
+
+            var useFileProxy = Environment.GetEnvironmentVariable("UseFileProxy");
+            if (null != useFileProxy)
+                services.AddSingleton<IFileProtector, FileProxyProtector>();
+            else
+                services.AddSingleton<IFileProtector, FileProtector>();
+
             services.AddSingleton<IFileAnalyser, FileAnalyser>();
             services.AddSingleton<IAdaptor<ContentManagementFlags, string>, GlasswallConfigurationAdaptor>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
