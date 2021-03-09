@@ -207,7 +207,7 @@ paths:
         The request body contains the Base64 representation of the file and Glasswall Content Management Flags with a 'Content-Type' of 'application/json'. 
         A Base64 Representation of the rebuilt file is then returned in the response with a 'Content-Type' of 'text/plain'.
         <br/><br/>
-        Select a file below to copy its Base64 Encoded representation to clipboard. The Total supported request size of the API gateway is 6MB, therefore the base64 encoded string must also be less than 6MB.
+        Select a file below to copy its Base64 Encoded representation to clipboard and use it in request body. The Total supported request size of the API gateway is 6MB, therefore the base64 encoded string must also be less than 6MB.
         <br/><br/>
         <span><input id="base64Input" type="file"></input> 
       requestBody:
@@ -291,7 +291,7 @@ paths:
       tags:
       - Rebuild    
       summary: Rebuilds a zip file using its binary data
-      description: <h3>Description:</h3>This endpoint accepts requests to rebuild a zip file with Glasswall d-FIRST™ Engine. Both the file and the Content Management Policy are sent in the request body with a 'Content-Type' of 'multipart/form-data'. The Rebuilt file is then returned in the response body with a 'Content-Type' of 'application/octet-stream'.
+      description: <h3>Description:</h3>This endpoint accepts requests to rebuild a zip file with Glasswall d-FIRST™ Engine. Both the file and the Content Management Policy are sent in the request body with a 'Content-Type' of 'multipart/form-data'. Rebuilt zip file is then returned in the response body with a 'Content-Type' of 'application/octet-stream'.
       parameters:
         - in: header
           name: Accept
@@ -377,7 +377,7 @@ paths:
     post:
       tags:
       - Rebuild    
-      summary: Rebuilds a zip file using S3 presignedURL
+      summary: Rebuilds a zip file using S3 presignedURL/objectURL and This api requires s3 configuration(AWS key and secret) on the hosted server.
       description: <h3>Description:</h3>This endpoint accepts requests to rebuild a zip file with Glasswall d-FIRST™ Engine. Both the presignedURL and the Content Management Policy are sent in the request body with a 'Content-Type' of 'multipart/form-data'. The Rebuilt file is then returned in the response body with a 'Content-Type' of 'application/octet-stream'.
       parameters:
         - in: header
@@ -463,7 +463,7 @@ paths:
     post:
       tags:
       - Rebuild    
-      summary: Rebuilds a zip file using S3 presignedURL and upload the rebuilt zip file to targetPresignedURL.
+      summary: Rebuilds a zip file using S3 presignedURL/objectURL and upload the rebuilt zip file to targetPresignedURL/objectURL. This api requires s3 configuration(AWS key and secret) on the hosted server.
       description: <h3>Description:</h3>This endpoint accepts requests to rebuild a zip file with Glasswall d-FIRST™ Engine. The presignedURL, targetPresignedURL and the Content Management Policy are sent in the request body with a 'Content-Type' of 'multipart/form-data'. The Rebuilt file is then uploaded to targetPresignedURL.
       requestBody:
         content:
@@ -516,8 +516,8 @@ paths:
     post:
       tags:
       - Rebuild    
-      summary: Rebuilds a zip file using its binary data
-      description: <h3>Description:</h3>This endpoint accepts requests to rebuild a zip file with Glasswall d-FIRST™ Engine. The file, targetPresignedURL and the Content Management Policy are sent in the request body with a 'Content-Type' of 'multipart/form-data'. The Rebuilt file is then uploaded to S3 targetPresignedURL.
+      summary: Rebuilds a zip file using its binary data and This api requires s3 configuration(AWS key and secret) on the hosted server.
+      description: <h3>Description:</h3>This endpoint accepts requests to rebuild a zip file with Glasswall d-FIRST™ Engine. The file, targetPresignedURL/objectURL. and the Content Management Policy are sent in the request body with a 'Content-Type' of 'multipart/form-data'. The Rebuilt file is then uploaded to S3 targetPresignedURL.
       parameters:
         - in: header
           name: Accept

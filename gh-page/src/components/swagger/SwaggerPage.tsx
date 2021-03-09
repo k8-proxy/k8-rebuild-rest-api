@@ -3,9 +3,9 @@ import SwaggerUI from "swagger-ui-react";
 import "swagger-ui-react/swagger-ui.css";
 import TopBar from "../shared/TopBar";
 import Base64Reader from "./Base64Reader";
-import copy from "copy-to-clipboard";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import * as clipboard from "clipboard-polyfill/text";
 
 const BYTES_PER_MB = 1e6;
 const UPLOAD_SIZE_LIMIT = 6 * BYTES_PER_MB;
@@ -35,9 +35,8 @@ const SwaggerPage = () => {
                 if (target.id === "base64Input") {
 
                     const base64 = await Base64Reader.ReadFromInput(target);
-                    if (copy(base64)) {
-                        toast.success("Copied " + target.files[0].name + " as Base64 to clipboard.");
-                    }
+                    await clipboard.writeText(base64);
+                    toast.success("Copied " + target.files[0].name + " as Base64 to clipboard.");
                 }
             }
         });
