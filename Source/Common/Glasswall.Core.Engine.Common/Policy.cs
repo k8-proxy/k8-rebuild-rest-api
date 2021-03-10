@@ -47,7 +47,8 @@ namespace Glasswall.Core.Engine.Common
                 EmbeddedFiles = ContentManagementFlagAction.Sanitise,
                 Acroform = ContentManagementFlagAction.Sanitise,
                 ActionsAll = ContentManagementFlagAction.Sanitise,
-                Javascript = ContentManagementFlagAction.Sanitise
+                Javascript = ContentManagementFlagAction.Sanitise,
+                Watermark = "Glasswall Protected"
             },
             TiffContentManagement = new TiffContentManagement
             {
