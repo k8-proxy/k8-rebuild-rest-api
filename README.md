@@ -42,7 +42,7 @@ These are static configuration that is used by the app to connect with other com
     ```
     "PdfContentManagement": {
         "Watermark": "GW Certified"
-      },
+     },
     ```
 
 ## Deployment
