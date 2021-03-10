@@ -6,25 +6,44 @@
 - update modules    
     `git submodule update --init`
 
-
 ## Endpoints
-- Endpoint  
-    `/api/rebuild/file`
-- This endpoint allows a client service to send a unprotected file using multipart form upload and returns a protected file as an output.
-- This endpoint does the following:
-    - Receives the file as mutlipart bytes array and rebuilds it.
-        - If it is unsuccessful, it returns `BAD REQUEST` 
-        - If it is successful, it will send the file to the core engine.
-    - File name is extracted from the URL.
-    - The core engine will then try and determine the file type.
-    - The file is rebuilt with the default content management flags for the file type.
-    - Protected file is returned.
+
+| API Endpoint | Method | Description | 
+|------|---------|---------    |
+| /api/rebuild    | POST |  Rebuilds a file located at a specified URL and outputs the rebuilt file to another specified URL |
+| /api/rebuild/file    | POST |  Rebuilds a file using its binary data       |
+| /api/rebuild/base64   | POST | Rebuilds a file using the Base64 encoded representation |
+| /api/rebuild/zipfile    | POST | Rebuilds a zip file using its binary data   |
+| /api/rebuild/s3tozip  | POST | Rebuilds a zip file using S3 presignedURL/objectURL and This api requires s3 configuration(AWS key and secret) on the hosted server.      |
+| /api/rebuild/s3tos3   | POST | Rebuilds a file using the Base64 encoded representation |
+| /api/rebuild/zipfile    | POST | Rebuilds a zip file using S3 presignedURL/objectURL and upload the rebuilt zip file to targetPresignedURL/objectURL. This api requires s3 configuration(AWS key and secret) on the hosted server.  |
+| /api/rebuild/ziptos3  | POST | Rebuilds a zip file using its binary data and This api requires s3 configuration(AWS key and secret) on the hosted server. |
+
+
+## Detailed API Endpoints Documentation - [ Link ](./ApiEndpointsDocumentation.md)
 
 ## Environment Variables
 These are static configuration that is used by the app to connect with other components.
 
-- AWS_ACCESS_KEY_ID : access key for AWS Account being used for s3.
-- AWS_SECRET_ACCESS_KEY : secret key for AWS Account being used for s3.
+- `AWS_ACCESS_KEY_ID` : access key for AWS Account being used for s3.
+- `AWS_SECRET_ACCESS_KEY` : secret key for AWS Account being used for s3.
+
+## Customize watermark on pdfs
+ 
+ - A watermark is added only to pdfs once it is rebuilt by icap-server
+ 
+ - Default watermark is `Glasswall Protected`
+ 
+ - To customize watermark text, pass below parameter in the request body under `"PdfContentManagement"`
+    ```
+     "Watermark": "GW Certified"
+    ```    
+**Example:**
+```
+"PdfContentManagement": {
+    "Watermark": "GW Certified"
+  },
+```
 
 ## Deployment
 There are 2 ways to deploy K8 Rebuild Rest API; docker and runtime. Below are instructions for both docker and runtime deployments.
@@ -81,4 +100,3 @@ https://www.youtube.com/watch?v=TlXwsJrXe68&amp;feature=youtu.be
 
 # Postman Collection
 https://www.getpostman.com/collections/8eb5b9d245b8aca558eb
-
