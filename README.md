@@ -38,12 +38,12 @@ These are static configuration that is used by the app to connect with other com
     ```
      "Watermark": "GW Certified"
     ```    
-**Example:**
-```
-"PdfContentManagement": {
-    "Watermark": "GW Certified"
-  },
-```
+    **Example:**
+    ```
+    "PdfContentManagement": {
+        "Watermark": "GW Certified"
+      },
+    ```
 
 ## Deployment
 There are 2 ways to deploy K8 Rebuild Rest API; docker and runtime. Below are instructions for both docker and runtime deployments.
