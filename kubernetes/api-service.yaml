@@ -28,7 +28,7 @@ spec:
             claimName: glasswalltarget-pvc
         - name: transaction-vol
           persistentVolumeClaim:
-            claimName: pv-transaction-query-service
+            claimName: pvc-transaction-query-service
       containers:
       - name: rebuild-rest-api
         image: ggrig/k8s-rest-api:0.04
