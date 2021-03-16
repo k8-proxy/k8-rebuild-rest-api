@@ -31,8 +31,11 @@ namespace Glasswall.CloudSdk.AWS.Rebuild
             services.AddSingleton<IFileTypeDetector, FileTypeDetector>();
 
             var useFileProxy = Environment.GetEnvironmentVariable("UseFileProxy");
+            var useNoChange = Environment.GetEnvironmentVariable("UseNoChange");
             if (null != useFileProxy)
                 services.AddSingleton<IFileProtector, FileProxyProtector>();
+            else if (null != useNoChange)
+                services.AddSingleton<IFileProtector, FileNoChangeProtector>();
             else
                 services.AddSingleton<IFileProtector, FileProtector>();
 
