@@ -26,6 +26,9 @@ spec:
         - name: target-vol
           persistentVolumeClaim:
             claimName: glasswalltarget-pvc
+        - name: transaction-vol
+          persistentVolumeClaim:
+            claimName: pv-transaction-query-service
       containers:
       - name: rebuild-rest-api
         image: ggrig/k8s-rest-api:0.04
@@ -43,6 +46,8 @@ spec:
             name: source-vol
           - mountPath: "/var/target"
             name: target-vol
+          - mountPath: "/var/transaction"
+            name: transaction-vol
         env:
         - name: ProcessingTimeoutDuration
           value: "00:01:00"
