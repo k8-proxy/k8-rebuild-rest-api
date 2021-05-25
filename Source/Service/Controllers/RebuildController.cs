@@ -149,22 +149,14 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
                 }
 
                 _zipUtility.ExtractZipFile(zipFilePath, null, zipFolderPath);
-                List<IFileProtectResponse> processDirectoryResp = await ProcessDirectory(zipFolderPath, protectedZipFolderPath, contentManagementFlags);
-                string statusMessage = string.Empty;
-                processDirectoryResp.Cast<IFileProcessStatus>().ToList().ForEach(x =>
-                {
-                    if (!string.IsNullOrWhiteSpace(x.ErrorMessage) && !x.IsDisallowed)
-                    {
-                        statusMessage += $"An error {x.ErrorMessage} occurred while processing the file {x.FileName}{Environment.NewLine}";
-                    }
-                    else
-                    {
-                        statusMessage += $"File {x.FileName} is successfully processed.{Environment.NewLine}";
-                    }
+                List<string> status = new List<string>();
+                List<IFileProtectResponse> processDirectoryResp = await ProcessDirectory(zipFolderPath, protectedZipFolderPath, contentManagementFlags, status);
 
+                if (status.Count > 0)
+                {
                     using StreamWriter sw = System.IO.File.CreateText(Path.Combine(protectedZipFolderPath, Constants.STATUS_FILE));
-                    sw.WriteLine(statusMessage);
-                });
+                    sw.WriteLine(string.Join("", status));
+                }
 
                 if (processDirectoryResp.All(x => !string.IsNullOrEmpty(x.ErrorMessage) && !x.IsDisallowed))
                 {
@@ -254,22 +246,14 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
                 }
 
                 _zipUtility.ExtractZipFile(zipFilePath, null, zipFolderPath);
-                List<IFileProtectResponse> processDirectoryResp = await ProcessDirectory(zipFolderPath, protectedZipFolderPath, contentManagementFlags);
-                string statusMessage = string.Empty;
-                processDirectoryResp.Cast<IFileProcessStatus>().ToList().ForEach(x =>
-                {
-                    if (!string.IsNullOrWhiteSpace(x.ErrorMessage) && !x.IsDisallowed)
-                    {
-                        statusMessage += $"An error {x.ErrorMessage} occurred while processing the file {x.FileName}{Environment.NewLine}";
-                    }
-                    else
-                    {
-                        statusMessage += $"File {x.FileName} is successfully processed.{Environment.NewLine}";
-                    }
+                List<string> status = new List<string>();
+                List<IFileProtectResponse> processDirectoryResp = await ProcessDirectory(zipFolderPath, protectedZipFolderPath, contentManagementFlags, status);
 
+                if (status.Count > 0)
+                {
                     using StreamWriter sw = System.IO.File.CreateText(Path.Combine(protectedZipFolderPath, Constants.STATUS_FILE));
-                    sw.WriteLine(statusMessage);
-                });
+                    sw.WriteLine(string.Join("", status));
+                }
 
                 if (processDirectoryResp.All(x => !string.IsNullOrEmpty(x.ErrorMessage) && !x.IsDisallowed))
                 {
@@ -361,22 +345,14 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
                 }
 
                 _zipUtility.ExtractZipFile(zipFilePath, null, zipFolderPath);
-                List<IFileProtectResponse> processDirectoryResp = await ProcessDirectory(zipFolderPath, protectedZipFolderPath, contentManagementFlags);
-                string statusMessage = string.Empty;
-                processDirectoryResp.Cast<IFileProcessStatus>().ToList().ForEach(x =>
-                {
-                    if (!string.IsNullOrWhiteSpace(x.ErrorMessage) && !x.IsDisallowed)
-                    {
-                        statusMessage += $"An error {x.ErrorMessage} occurred while processing the file {x.FileName}{Environment.NewLine}";
-                    }
-                    else
-                    {
-                        statusMessage += $"File {x.FileName} is successfully processed.{Environment.NewLine}";
-                    }
+                List<string> status = new List<string>();
+                List<IFileProtectResponse> processDirectoryResp = await ProcessDirectory(zipFolderPath, protectedZipFolderPath, contentManagementFlags, status);
 
+                if (status.Count > 0)
+                {
                     using StreamWriter sw = System.IO.File.CreateText(Path.Combine(protectedZipFolderPath, Constants.STATUS_FILE));
-                    sw.WriteLine(statusMessage);
-                });
+                    sw.WriteLine(string.Join("", status));
+                }
 
                 if (processDirectoryResp.All(x => !string.IsNullOrEmpty(x.ErrorMessage) && !x.IsDisallowed))
                 {
@@ -468,22 +444,14 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
                 }
 
                 _zipUtility.ExtractZipFile(zipFilePath, null, zipFolderPath);
-                List<IFileProtectResponse> processDirectoryResp = await ProcessDirectory(zipFolderPath, protectedZipFolderPath, contentManagementFlags);
-                string statusMessage = string.Empty;
-                processDirectoryResp.Cast<IFileProcessStatus>().ToList().ForEach(x =>
-                {
-                    if (!string.IsNullOrWhiteSpace(x.ErrorMessage) && !x.IsDisallowed)
-                    {
-                        statusMessage += $"An error {x.ErrorMessage} occurred while processing the file {x.FileName}{Environment.NewLine}";
-                    }
-                    else
-                    {
-                        statusMessage += $"File {x.FileName} is successfully processed.{Environment.NewLine}";
-                    }
+                List<string> status = new List<string>();
+                List<IFileProtectResponse> processDirectoryResp = await ProcessDirectory(zipFolderPath, protectedZipFolderPath, contentManagementFlags, status);
 
+                if (status.Count > 0)
+                {
                     using StreamWriter sw = System.IO.File.CreateText(Path.Combine(protectedZipFolderPath, Constants.STATUS_FILE));
-                    sw.WriteLine(statusMessage);
-                });
+                    sw.WriteLine(string.Join("", status));
+                }
 
                 if (processDirectoryResp.All(x => !string.IsNullOrEmpty(x.ErrorMessage) && !x.IsDisallowed))
                 {
@@ -542,7 +510,7 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
             FileTypeDetectionResponse fileType = await Task.Run(() => DetectFromBytes(fileBytes));
 
             if (fileType.FileType == FileType.Unknown)
-                return UnprocessableEntity("Input file could not be processed.");
+                return UnprocessableEntity("File could not be determined to be a supported file.");
 
             string fileExt = Path.GetExtension(file.FileName);
             if (fileExt?.ToLower() != ".json")
@@ -687,13 +655,13 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
 
         private async Task<List<IFileProtectResponse>> ProcessDirectory(string zipFolderPath,
                                                            string protectedZipFolderPath,
-                                                           ContentManagementFlags contentManagementFlags)
+                                                           ContentManagementFlags contentManagementFlags, List<string> status)
         {
             List<IFileProtectResponse> responseList = new List<IFileProtectResponse>();
             // Process the list of files found in the directory.
             foreach (string extractedFile in Directory.GetFiles(zipFolderPath))
             {
-                IFileProtectResponse processFileResp = await ProcessFile(extractedFile, protectedZipFolderPath, contentManagementFlags);
+                IFileProtectResponse processFileResp = await ProcessFile(extractedFile, protectedZipFolderPath, contentManagementFlags, status);
                 responseList.Add(processFileResp);
             }
 
@@ -703,7 +671,7 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
                 if (subdirectory.EndsWith(Constants.MACOSX))
                     continue;
 
-                List<IFileProtectResponse> processDirectoryResp = await ProcessDirectory(subdirectory, protectedZipFolderPath, contentManagementFlags);
+                List<IFileProtectResponse> processDirectoryResp = await ProcessDirectory(subdirectory, protectedZipFolderPath, contentManagementFlags, status);
                 responseList.AddRange(processDirectoryResp);
             }
             return responseList;
@@ -711,18 +679,22 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
 
         private async Task<IFileProtectResponse> ProcessFile(string extractedFile,
                                                       string protectedZipFolderPath,
-                                                      ContentManagementFlags contentManagementFlags)
+                                                      ContentManagementFlags contentManagementFlags, List<string> status)
         {
             using FileStream stream = System.IO.File.OpenRead(extractedFile);
             IFormFile iFormFile = new FormFile(stream, 0, stream.Length, null, Path.GetFileName(stream.Name));
 
             string fileName = Path.GetFileName(extractedFile);
+            string zipFilePath = extractedFile[(extractedFile.IndexOf(Constants.UPLOADS_FOLDER) + 8)..];
+            zipFilePath = zipFilePath[(zipFilePath.IndexOf(Constants.SLASH, zipFilePath.IndexOf(Constants.SLASH) + 1) + 1)..];
+
             IFileProcessStatus fileProcessStatus = new FileProcessStatus { FileName = fileName };
             if (!TryReadFormFile(iFormFile, out byte[] fileBytes))
             {
                 fileProcessStatus.ErrorMessage = "Input file could not be read.";
                 fileProcessStatus.StatusCode = 400;
                 fileProcessStatus.FileName = fileName;
+                status.Add($"File {zipFilePath} could not be read {Environment.NewLine}");
                 return fileProcessStatus;
             }
 
@@ -730,9 +702,10 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
 
             if (fileType.FileType == FileType.Unknown)
             {
-                fileProcessStatus.ErrorMessage = "Input file could not be read.";
+                fileProcessStatus.ErrorMessage = "File could not be determined to be a supported file";
                 fileProcessStatus.StatusCode = 400;
                 fileProcessStatus.FileName = fileName;
+                status.Add($"File {zipFilePath} could not be determined to be a supported file. {Environment.NewLine}");
                 return fileProcessStatus;
             }
 
@@ -754,10 +727,18 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
                 fileProcessStatus.ErrorMessage = $"File could not be rebuilt. Error Message: {protectedFileResponse.ErrorMessage}";
                 fileProcessStatus.StatusCode = 422;
                 fileProcessStatus.FileName = fileName;
+                status.Add($"File {zipFilePath} could not be rebuilt. Error Message: {protectedFileResponse.ErrorMessage}");
                 return fileProcessStatus;
             }
 
-            System.IO.File.WriteAllBytes(Path.Combine(protectedZipFolderPath, Path.GetFileName(extractedFile)), protectedFileResponse.ProtectedFile);
+            string filePath = Path.Combine(protectedZipFolderPath, zipFilePath);
+            string directoryName = Path.GetDirectoryName(filePath);
+            if (!Directory.Exists(directoryName))
+            {
+                Directory.CreateDirectory(directoryName);
+            }
+            System.IO.File.WriteAllBytes(filePath, protectedFileResponse.ProtectedFile);
+            status.Add($"File {zipFilePath} is successfully processed.{Environment.NewLine}");
             return fileProcessStatus;
         }
 

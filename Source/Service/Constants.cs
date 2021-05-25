@@ -9,6 +9,7 @@
         public const string BASH = "bash";
         public const string RESPMOD_HEADERS = "RESPMOD HEADERS:";
         public const string OK = "200 OK";
+        public const string SLASH = "/";
 
         public static class EnvironmentVariables
         {
