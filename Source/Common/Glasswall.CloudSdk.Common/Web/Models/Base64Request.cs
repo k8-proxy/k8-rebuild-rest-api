@@ -1,5 +1,5 @@
-using System.ComponentModel.DataAnnotations;
 using Glasswall.Core.Engine.Common.PolicyConfig;
+using System.ComponentModel.DataAnnotations;
 
 namespace Glasswall.CloudSdk.Common.Web.Models
 {

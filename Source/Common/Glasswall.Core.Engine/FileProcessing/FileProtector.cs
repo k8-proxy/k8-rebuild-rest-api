@@ -1,11 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using Glasswall.Core.Engine.Common;
+﻿using Glasswall.Core.Engine.Common;
 using Glasswall.Core.Engine.Common.FileProcessing;
 using Glasswall.Core.Engine.Common.GlasswallEngineLibrary;
 using Glasswall.Core.Engine.Common.PolicyConfig;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
 
 namespace Glasswall.Core.Engine.FileProcessing
 {
@@ -26,10 +25,10 @@ namespace Glasswall.Core.Engine.FileProcessing
 
         public IFileProtectResponse GetProtectedFile(ContentManagementFlags contentManagementFlags, string fileType, byte[] fileBytes)
         {
-            var response = new FileProtectResponse { ProtectedFile = Enumerable.Empty<byte>().ToArray() };
+            FileProtectResponse response = new FileProtectResponse { ProtectedFile = Enumerable.Empty<byte>().ToArray() };
 
-            var glasswallConfiguration = _glasswallConfigurationAdaptor.Adapt(contentManagementFlags);
-            var configurationOutcome = _glasswallFileOperations.SetConfiguration(glasswallConfiguration);
+            string glasswallConfiguration = _glasswallConfigurationAdaptor.Adapt(contentManagementFlags);
+            EngineOutcome configurationOutcome = _glasswallFileOperations.SetConfiguration(glasswallConfiguration);
             if (configurationOutcome != EngineOutcome.Success)
             {
                 _logger.Log(LogLevel.Error, "Error processing configuration");
@@ -37,10 +36,10 @@ namespace Glasswall.Core.Engine.FileProcessing
                 return response;
             }
 
-            var version = _glasswallFileOperations.GetLibraryVersion();
+            string version = _glasswallFileOperations.GetLibraryVersion();
             _logger.LogInformation($"Engine version: {version}");
 
-            var engineOutcome = _glasswallFileOperations.ProtectFile(fileBytes, fileType, out var protectedFile);
+            EngineOutcome engineOutcome = _glasswallFileOperations.ProtectFile(fileBytes, fileType, out byte[] protectedFile);
             response.Outcome = engineOutcome;
             response.ProtectedFile = protectedFile;
 

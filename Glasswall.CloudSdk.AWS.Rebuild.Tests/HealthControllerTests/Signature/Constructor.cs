@@ -1,10 +1,10 @@
-﻿using System;
-using Glasswall.CloudSdk.AWS.Rebuild.Controllers;
+﻿using Glasswall.CloudSdk.AWS.Rebuild.Controllers;
 using Glasswall.CloudSdk.Common;
 using Glasswall.Core.Engine.Common.FileProcessing;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
+using System;
 
 namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.HealthControllerTests.Signature
 {
@@ -14,7 +14,7 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.HealthControllerTests.Signature
         [Test]
         public void Valid_Arguments_Should_Construct()
         {
-            var controller = new HealthController(
+            HealthController controller = new HealthController(
                 Mock.Of<ILogger<HealthController>>(),
                 Mock.Of<IGlasswallVersionService>(),
                 Mock.Of<IMetricService>());

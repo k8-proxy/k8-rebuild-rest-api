@@ -1,9 +1,8 @@
-﻿using System;
-using Glasswall.CloudSdk.Common;
-using Glasswall.CloudSdk.Common.Web.Models;
+﻿using Glasswall.CloudSdk.Common;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using System;
 
 namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildFromFormFileMethod
 {
@@ -27,7 +26,7 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildFro
 
             Assert.That(_result, Is.Not.Null);
             Assert.That(_result, Is.TypeOf<BadRequestObjectResult>());
-            var result = _result as BadRequestObjectResult;
+            BadRequestObjectResult result = _result as BadRequestObjectResult;
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Value, Is.InstanceOf<string>());
             Assert.That(result.Value, Is.EqualTo("Input file could not be read."));

@@ -1,6 +1,6 @@
-﻿using System;
-using Glasswall.Core.Engine.Common.FileProcessing;
+﻿using Glasswall.Core.Engine.Common.FileProcessing;
 using Glasswall.Core.Engine.Common.GlasswallEngineLibrary;
+using System;
 
 namespace Glasswall.Core.Engine.FileProcessing
 {

@@ -1,13 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Json;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
 using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
@@ -25,6 +15,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Linq;
+using System.Runtime.Serialization.Json;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
 {
@@ -61,20 +61,28 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
 
                 ContentManagementFlags contentManagementFlags = null;
                 if (!string.IsNullOrWhiteSpace(contentManagementFlagJson))
+                {
                     contentManagementFlags = await Task.Run(() => JsonConvert.DeserializeObject<ContentManagementFlags>(contentManagementFlagJson));
+                }
 
                 if (!ModelState.IsValid)
+                {
                     return BadRequest(ModelState);
+                }
 
                 if (!TryReadFormFile(file, out byte[] fileBytes))
+                {
                     return BadRequest("Input file could not be read.");
+                }
 
                 RecordEngineVersion();
 
                 FileTypeDetectionResponse fileType = await Task.Run(() => DetectFromBytes(fileBytes));
 
                 if (fileType.FileType == FileType.Unknown)
+                {
                     return UnprocessableEntity("File could not be determined to be a supported file");
+                }
 
                 IFileProtectResponse protectedFileResponse = await Task.Run(() => RebuildFromBytes(
                     contentManagementFlags, fileType.FileTypeName, fileBytes));
@@ -82,7 +90,9 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
                 if (!string.IsNullOrWhiteSpace(protectedFileResponse.ErrorMessage))
                 {
                     if (protectedFileResponse.IsDisallowed)
+                    {
                         return Ok(protectedFileResponse);
+                    }
 
                     return UnprocessableEntity(
                         $"File could not be rebuilt. Error Message: {protectedFileResponse.ErrorMessage}");
@@ -109,20 +119,28 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
 
                 ContentManagementFlags contentManagementFlags = null;
                 if (!string.IsNullOrWhiteSpace(contentManagementFlagJson))
+                {
                     contentManagementFlags = await Task.Run(() => JsonConvert.DeserializeObject<ContentManagementFlags>(contentManagementFlagJson));
+                }
 
                 if (!ModelState.IsValid)
+                {
                     return BadRequest(ModelState);
+                }
 
                 if (!TryReadFormFile(file, out byte[] fileBytes))
+                {
                     return BadRequest("Input file could not be read.");
+                }
 
                 RecordEngineVersion();
 
                 FileTypeDetectionResponse fileType = await Task.Run(() => DetectFromBytes(fileBytes));
 
                 if (fileType.FileType != FileType.Zip)
+                {
                     return UnprocessableEntity("Input file could not be processed.");
+                }
 
                 string zipFolderName = $"{Guid.NewGuid()}";
                 string protectedZipFolderPath = Path.Combine(tempFolderPath, Guid.NewGuid().ToString());
@@ -175,7 +193,9 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
             finally
             {
                 if (Directory.Exists(tempFolderPath))
+                {
                     Directory.Delete(tempFolderPath, true);
+                }
             }
         }
 
@@ -190,10 +210,14 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
 
                 ContentManagementFlags contentManagementFlags = null;
                 if (!string.IsNullOrWhiteSpace(contentManagementFlagJson))
+                {
                     contentManagementFlags = await Task.Run(() => JsonConvert.DeserializeObject<ContentManagementFlags>(contentManagementFlagJson));
+                }
 
                 if (!ModelState.IsValid)
+                {
                     return BadRequest(ModelState);
+                }
 
                 AmazonS3Uri amazonS3Uri = new AmazonS3Uri(presignedURL);
                 AmazonS3Client amazonS3Client = new AmazonS3Client(Environment.GetEnvironmentVariable(Constants.EnvironmentVariables.AWS_ACCESS_KEY_ID),
@@ -212,14 +236,18 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
                 memStream.Seek(0, SeekOrigin.Begin);
                 IFormFile file = new FormFile(memStream, 0, memStream.Length, null, Path.GetFileName(amazonS3Uri.Key));
                 if (!TryReadFormFile(file, out byte[] fileBytes))
+                {
                     return BadRequest("Input file could not be read.");
+                }
 
                 RecordEngineVersion();
 
                 FileTypeDetectionResponse fileType = await Task.Run(() => DetectFromBytes(fileBytes));
 
                 if (fileType.FileType != FileType.Zip)
+                {
                     return UnprocessableEntity("Input file could not be processed.");
+                }
 
                 string zipFolderName = $"{Guid.NewGuid()}";
                 string protectedZipFolderPath = Path.Combine(tempFolderPath, Guid.NewGuid().ToString());
@@ -273,7 +301,9 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
             finally
             {
                 if (Directory.Exists(tempFolderPath))
+                {
                     Directory.Delete(tempFolderPath, true);
+                }
             }
         }
 
@@ -289,10 +319,14 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
 
                 ContentManagementFlags contentManagementFlags = null;
                 if (!string.IsNullOrWhiteSpace(contentManagementFlagJson))
+                {
                     contentManagementFlags = await Task.Run(() => JsonConvert.DeserializeObject<ContentManagementFlags>(contentManagementFlagJson));
+                }
 
                 if (!ModelState.IsValid)
+                {
                     return BadRequest(ModelState);
+                }
 
                 AmazonS3Uri amazonS3Uri = new AmazonS3Uri(sourcePresignedURL);
                 AmazonS3Client amazonS3Client = new AmazonS3Client(Environment.GetEnvironmentVariable(Constants.EnvironmentVariables.AWS_ACCESS_KEY_ID),
@@ -311,14 +345,18 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
                 memStream.Seek(0, SeekOrigin.Begin);
                 IFormFile file = new FormFile(memStream, 0, memStream.Length, null, Path.GetFileName(amazonS3Uri.Key));
                 if (!TryReadFormFile(file, out byte[] fileBytes))
+                {
                     return BadRequest("Input file could not be read.");
+                }
 
                 RecordEngineVersion();
 
                 FileTypeDetectionResponse fileType = await Task.Run(() => DetectFromBytes(fileBytes));
 
                 if (fileType.FileType != FileType.Zip)
+                {
                     return UnprocessableEntity("Input file could not be processed.");
+                }
 
                 string zipFolderName = $"{Guid.NewGuid()}";
                 string protectedZipFolderPath = Path.Combine(tempFolderPath, Guid.NewGuid().ToString());
@@ -388,7 +426,9 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
             finally
             {
                 if (Directory.Exists(tempFolderPath))
+                {
                     Directory.Delete(tempFolderPath, true);
+                }
             }
         }
 
@@ -404,20 +444,28 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
 
                 ContentManagementFlags contentManagementFlags = null;
                 if (!string.IsNullOrWhiteSpace(contentManagementFlagJson))
+                {
                     contentManagementFlags = await Task.Run(() => JsonConvert.DeserializeObject<ContentManagementFlags>(contentManagementFlagJson));
+                }
 
                 if (!ModelState.IsValid)
+                {
                     return BadRequest(ModelState);
+                }
 
                 if (!TryReadFormFile(file, out byte[] fileBytes))
+                {
                     return BadRequest("Input file could not be read.");
+                }
 
                 RecordEngineVersion();
 
                 FileTypeDetectionResponse fileType = await Task.Run(() => DetectFromBytes(fileBytes));
 
                 if (fileType.FileType != FileType.Zip)
+                {
                     return UnprocessableEntity("Input file could not be processed.");
+                }
 
                 string zipFolderName = $"{Guid.NewGuid()}";
                 string protectedZipFolderPath = Path.Combine(tempFolderPath, Guid.NewGuid().ToString());
@@ -490,7 +538,9 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
             finally
             {
                 if (Directory.Exists(tempFolderPath))
+                {
                     Directory.Delete(tempFolderPath, true);
+                }
             }
         }
 
@@ -500,17 +550,23 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
             Logger.LogInformation("'{0}' method invoked", nameof(JsonToXml));
 
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             if (!TryReadFormFile(file, out byte[] fileBytes))
+            {
                 return BadRequest("Input file could not be read.");
+            }
 
             RecordEngineVersion();
 
             FileTypeDetectionResponse fileType = await Task.Run(() => DetectFromBytes(fileBytes));
 
             if (fileType.FileType == FileType.Unknown)
+            {
                 return UnprocessableEntity("File could not be determined to be a supported file.");
+            }
 
             string fileExt = Path.GetExtension(file.FileName);
             if (fileExt?.ToLower() != ".json")
@@ -548,17 +604,23 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
                 Logger.LogInformation("'{0}' method invoked", nameof(RebuildFromBase64));
 
                 if (!ModelState.IsValid)
+                {
                     return BadRequest(ModelState);
+                }
 
                 if (!TryGetBase64File(request.Base64, out byte[] file))
+                {
                     return BadRequest("Input file could not be decoded from base64.");
+                }
 
                 RecordEngineVersion();
 
                 FileTypeDetectionResponse fileType = await Task.Run(() => DetectFromBytes(file));
 
                 if (fileType.FileType == FileType.Unknown)
+                {
                     return UnprocessableEntity("File could not be determined to be a supported file");
+                }
 
                 IFileProtectResponse protectedFileResponse = await Task.Run(() => RebuildFromBytes(
                     request.ContentManagementFlags, fileType.FileTypeName, file));
@@ -566,7 +628,9 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
                 if (!string.IsNullOrWhiteSpace(protectedFileResponse.ErrorMessage))
                 {
                     if (protectedFileResponse.IsDisallowed)
+                    {
                         return Ok(protectedFileResponse);
+                    }
 
                     return UnprocessableEntity(
                         $"File could not be rebuilt. Error Message: {protectedFileResponse.ErrorMessage}");
@@ -589,17 +653,23 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
                 Logger.LogInformation("'{0}' method invoked", nameof(RebuildUrlToUrl));
 
                 if (!ModelState.IsValid)
+                {
                     return BadRequest(ModelState);
+                }
 
                 if (!TryGetFile(request.InputGetUrl, out byte[] file))
+                {
                     return BadRequest("Input file could not be downloaded.");
+                }
 
                 RecordEngineVersion();
 
                 FileTypeDetectionResponse fileType = await Task.Run(() => DetectFromBytes(file));
 
                 if (fileType.FileType == FileType.Unknown)
+                {
                     return UnprocessableEntity("File could not be determined to be a supported file");
+                }
 
                 IFileProtectResponse protectedFileResponse = await Task.Run(() => RebuildFromBytes(
                     request.ContentManagementFlags, fileType.FileTypeName, file));
@@ -607,14 +677,18 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
                 if (!string.IsNullOrWhiteSpace(protectedFileResponse.ErrorMessage))
                 {
                     if (protectedFileResponse.IsDisallowed)
+                    {
                         return Ok(protectedFileResponse);
+                    }
 
                     return UnprocessableEntity(
                         $"File could not be rebuilt. Error Message: {protectedFileResponse.ErrorMessage}");
                 }
 
                 if (!TryPutFile(request.OutputPutUrl, protectedFileResponse.ProtectedFile))
+                {
                     return BadRequest("Could not put protected file to the supplied output url");
+                }
 
                 return Ok();
             }
@@ -669,7 +743,9 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
             foreach (string subdirectory in Directory.GetDirectories(zipFolderPath))
             {
                 if (subdirectory.EndsWith(Constants.MACOSX))
+                {
                     continue;
+                }
 
                 List<IFileProtectResponse> processDirectoryResp = await ProcessDirectory(subdirectory, protectedZipFolderPath, contentManagementFlags, status);
                 responseList.AddRange(processDirectoryResp);
@@ -746,8 +822,10 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
         {
             if (!xmlDocument.HasElements)
             {
-                XElement xElement = new XElement(xmlDocument.Name.LocalName);
-                xElement.Value = xmlDocument.Value;
+                XElement xElement = new XElement(xmlDocument.Name.LocalName)
+                {
+                    Value = xmlDocument.Value
+                };
                 return xElement;
             }
             return new XElement(xmlDocument.Name.LocalName, xmlDocument.Elements().Select(el => RemoveAllNamespaces(el)));

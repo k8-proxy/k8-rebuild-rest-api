@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Amazon.S3;
+using Amazon.S3.Model;
+using System;
 using System.IO;
 using System.Threading.Tasks;
-using Amazon.S3;
-using Amazon.S3.Model;
 
 namespace Glasswall.CloudSdk.AWS.Common.S3
 {
@@ -10,15 +10,26 @@ namespace Glasswall.CloudSdk.AWS.Common.S3
     {
         public static async Task<byte[]> DownloadS3Object(this IAmazonS3 s3Client, string bucket, string key)
         {
-            if (s3Client == null) throw new ArgumentNullException(nameof(s3Client));
-            if (string.IsNullOrWhiteSpace(bucket)) throw new ArgumentNullException(nameof(bucket));
-            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentNullException(nameof(key));
-
-            using (var response = await s3Client.GetObjectAsync(bucket, key))
+            if (s3Client == null)
             {
-                using (var s3Contents = response.ResponseStream)
+                throw new ArgumentNullException(nameof(s3Client));
+            }
+
+            if (string.IsNullOrWhiteSpace(bucket))
+            {
+                throw new ArgumentNullException(nameof(bucket));
+            }
+
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            using (GetObjectResponse response = await s3Client.GetObjectAsync(bucket, key))
+            {
+                using (Stream s3Contents = response.ResponseStream)
                 {
-                    using (var ms = new MemoryStream())
+                    using (MemoryStream ms = new MemoryStream())
                     {
                         s3Contents.CopyTo(ms);
                         return ms.ToArray();
@@ -29,11 +40,22 @@ namespace Glasswall.CloudSdk.AWS.Common.S3
 
         public static async Task PutByteArray(this IAmazonS3 s3Client, byte[] bytes, string bucket, string key)
         {
-            if (s3Client == null) throw new ArgumentNullException(nameof(s3Client));
-            if (string.IsNullOrWhiteSpace(bucket)) throw new ArgumentNullException(nameof(bucket));
-            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentNullException(nameof(key));
+            if (s3Client == null)
+            {
+                throw new ArgumentNullException(nameof(s3Client));
+            }
 
-            using (var protectedFileStream = new MemoryStream(bytes))
+            if (string.IsNullOrWhiteSpace(bucket))
+            {
+                throw new ArgumentNullException(nameof(bucket));
+            }
+
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            using (MemoryStream protectedFileStream = new MemoryStream(bytes))
             {
                 await s3Client.PutObjectAsync(new PutObjectRequest
                 {

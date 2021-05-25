@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using System.Reflection;
-using Glasswall.CloudSdk.AWS.Rebuild.Controllers;
+﻿using Glasswall.CloudSdk.AWS.Rebuild.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
+using System.Linq;
+using System.Reflection;
 
 namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.HealthControllerTests.Signature
 {
@@ -12,7 +12,7 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.HealthControllerTests.Signature
         [Test]
         public void Valid_Arguments_Should_Construct()
         {
-            var attributes = typeof(HealthController).GetCustomAttributes().ToArray();
+            System.Attribute[] attributes = typeof(HealthController).GetCustomAttributes().ToArray();
 
             Assert.That(attributes, Has.Exactly(2).Items);
 

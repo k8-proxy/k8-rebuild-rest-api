@@ -1,5 +1,5 @@
-﻿using System;
-using Glasswall.Core.Engine.Common.PolicyConfig;
+﻿using Glasswall.Core.Engine.Common.PolicyConfig;
+using System;
 
 namespace Glasswall.Core.Engine.Common
 {

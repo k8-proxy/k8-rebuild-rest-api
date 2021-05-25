@@ -1,8 +1,8 @@
-using System;
 using Glasswall.CloudSdk.Common;
 using Glasswall.Core.Engine.Common.FileProcessing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
 {

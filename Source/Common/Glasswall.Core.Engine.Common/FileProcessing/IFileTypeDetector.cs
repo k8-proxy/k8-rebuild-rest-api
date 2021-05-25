@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using Glasswall.Core.Engine.Messaging;
+﻿using Glasswall.Core.Engine.Messaging;
 
 namespace Glasswall.Core.Engine.Common.FileProcessing
 {
