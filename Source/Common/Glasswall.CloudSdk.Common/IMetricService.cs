@@ -1,5 +1,3 @@
-using System;
-
 namespace Glasswall.CloudSdk.Common
 {
     public interface IMetricService

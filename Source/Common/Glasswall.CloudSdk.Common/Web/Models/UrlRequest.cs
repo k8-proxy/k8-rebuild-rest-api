@@ -1,6 +1,6 @@
+using Glasswall.Core.Engine.Common.PolicyConfig;
 using System;
 using System.ComponentModel.DataAnnotations;
-using Glasswall.Core.Engine.Common.PolicyConfig;
 
 namespace Glasswall.CloudSdk.Common.Web.Models
 {

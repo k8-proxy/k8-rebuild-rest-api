@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Glasswall.Core.Engine.Common;
+using Glasswall.Core.Engine.Common.GlasswallEngineLibrary;
+using Glasswall.Core.Engine.Messaging;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.InteropServices;
-using Glasswall.Core.Engine.Common;
-using Glasswall.Core.Engine.Common.GlasswallEngineLibrary;
-using Glasswall.Core.Engine.Messaging;
 
 namespace Glasswall.Core.Engine
 {
@@ -23,7 +23,7 @@ namespace Glasswall.Core.Engine
         private static extern int GWDetermineFileTypeFromFileInMem(byte[] inputBuffer, int inputBufferSize);
 
         [DllImport(Libc, EntryPoint = "GWFileConfigGet")]
-        static extern int GWFileConfigGet(out IntPtr configurationBuffer, ref UIntPtr outputLength);
+        private static extern int GWFileConfigGet(out IntPtr configurationBuffer, ref UIntPtr outputLength);
 
         [DllImport(Libc, EntryPoint = "GWFileConfigXML")]
         private static extern int GWFileConfigXML(IntPtr xmlConfig);
@@ -65,12 +65,12 @@ namespace Glasswall.Core.Engine
 
             try
             {
-                result = GWGetAllIdInfo(out var outputBufferSizePtr, out var outputBuffer);
+                result = GWGetAllIdInfo(out UIntPtr outputBufferSizePtr, out IntPtr outputBuffer);
 
                 if (outputBuffer != IntPtr.Zero && outputBufferSizePtr != UIntPtr.Zero)
                 {
                     threats = Marshal.PtrToStringAnsi(outputBuffer, (int)outputBufferSizePtr);
-                } 
+                }
             }
             finally
             {
@@ -81,28 +81,28 @@ namespace Glasswall.Core.Engine
 
         public string GetLibraryVersion()
         {
-            var fileVersion = GWFileVersion();
+            IntPtr fileVersion = GWFileVersion();
             return fileVersion.MarshalNativeToManaged();
         }
 
         public string GetEngineError()
         {
-            var response = GWFileErrorMsg();
+            IntPtr response = GWFileErrorMsg();
             return response.MarshalNativeToManaged();
         }
 
         public FileType DetermineFileType(byte[] fileData)
         {
-            var status = GWDetermineFileTypeFromFileInMem(fileData, fileData.Length);
+            int status = GWDetermineFileTypeFromFileInMem(fileData, fileData.Length);
 
             return (FileType)Enum.Parse(typeof(FileType), status.ToString(CultureInfo.InvariantCulture));
         }
 
         public EngineOutcome GetConfiguration(out string configuration)
         {
-            var configurationBufferLength = UIntPtr.Zero;
+            UIntPtr configurationBufferLength = UIntPtr.Zero;
 
-            int result = GWFileConfigGet(out var configurationBuffer, ref configurationBufferLength);
+            int result = GWFileConfigGet(out IntPtr configurationBuffer, ref configurationBufferLength);
 
             configuration = configurationBuffer.MarshalNativeToManaged();
 
@@ -111,7 +111,7 @@ namespace Glasswall.Core.Engine
 
         public EngineOutcome SetConfiguration(string configuration)
         {
-            var nativeValue = configuration.MarshalManagedToNative();
+            IntPtr nativeValue = configuration.MarshalManagedToNative();
             int result;
 
             try
@@ -128,13 +128,13 @@ namespace Glasswall.Core.Engine
 
         public EngineOutcome AnalyseFile(byte[] fileContent, string fileType, out string analysisReport)
         {
-            var outputBufferSizePtr = UIntPtr.Zero;
-            var nativeValue = fileType.MarshalManagedToNative();
+            UIntPtr outputBufferSizePtr = UIntPtr.Zero;
+            IntPtr nativeValue = fileType.MarshalManagedToNative();
             int result;
 
             try
             {
-                result = GWMemoryToMemoryAnalysisAudit(fileContent, (UIntPtr)fileContent.Length, nativeValue, out var outputBufferPtr, ref outputBufferSizePtr);
+                result = GWMemoryToMemoryAnalysisAudit(fileContent, (UIntPtr)fileContent.Length, nativeValue, out IntPtr outputBufferPtr, ref outputBufferSizePtr);
 
                 analysisReport = null;
 
@@ -154,13 +154,13 @@ namespace Glasswall.Core.Engine
 
         public EngineOutcome ProtectFile(byte[] fileContent, string fileType, out byte[] protectedFile)
         {
-            var outputBufferSizePtr = UIntPtr.Zero;
-            var nativeValue = fileType.MarshalManagedToNative();
+            UIntPtr outputBufferSizePtr = UIntPtr.Zero;
+            IntPtr nativeValue = fileType.MarshalManagedToNative();
             int result;
 
             try
             {
-                result = GWMemoryToMemoryProtect(fileContent, (UIntPtr)fileContent.Length, nativeValue, out var outputBufferPtr, ref outputBufferSizePtr);
+                result = GWMemoryToMemoryProtect(fileContent, (UIntPtr)fileContent.Length, nativeValue, out IntPtr outputBufferPtr, ref outputBufferSizePtr);
 
                 protectedFile = null;
 
@@ -181,7 +181,7 @@ namespace Glasswall.Core.Engine
 
         public string GetErrorMessage()
         {
-            var errorMessage = GWFileErrorMsg();
+            IntPtr errorMessage = GWFileErrorMsg();
             return errorMessage.MarshalNativeToManaged();
         }
 
@@ -196,7 +196,9 @@ namespace Glasswall.Core.Engine
             try
             {
                 if (disposing)
+                {
                     GWFileDone();
+                }
             }
             catch (Exception)
             {

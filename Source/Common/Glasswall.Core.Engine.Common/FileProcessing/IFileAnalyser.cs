@@ -6,7 +6,7 @@ namespace Glasswall.Core.Engine.Common.FileProcessing
     {
         string GetReport(
             ContentManagementFlags flags,
-            string fileType, 
+            string fileType,
             byte[] fileBytes);
     }
 }

@@ -1,9 +1,8 @@
-﻿using System;
+﻿using Glasswall.CloudSdk.Common.Web.Models;
+using NUnit.Framework;
+using System;
 using System.Net;
 using System.Net.Http;
-using Glasswall.CloudSdk.Common.Web.Models;
-using Microsoft.AspNetCore.Mvc;
-using NUnit.Framework;
 
 namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildUrlToUrlTests
 {
@@ -16,7 +15,7 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildUrl
         public void OnetimeSetup()
         {
             CommonSetup();
-            
+
             _dummyException = new Exception();
 
             GlasswallVersionServiceMock.Setup(s => s.GetVersion())

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Glasswall.CloudSdk.Common;
+﻿using Glasswall.CloudSdk.Common;
 using Glasswall.CloudSdk.Common.Web.Models;
 using Glasswall.Core.Engine.Common;
 using Glasswall.Core.Engine.Common.PolicyConfig;
@@ -9,6 +7,8 @@ using Glasswall.Core.Engine.Messaging;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Linq;
 
 namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildFromBase64Method
 {

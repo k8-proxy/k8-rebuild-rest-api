@@ -28,17 +28,17 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildFro
         [Test]
         public void Bad_Request_Contains_Errors()
         {
-            var result = _result as BadRequestObjectResult;
+            BadRequestObjectResult result = _result as BadRequestObjectResult;
 
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Value, Is.InstanceOf<SerializableError>());
         }
-        
+
         [Test]
         public void Error_Is_Expected()
         {
-            var result = _result as BadRequestObjectResult;
-            var responseBody = (SerializableError)result?.Value;
+            BadRequestObjectResult result = _result as BadRequestObjectResult;
+            SerializableError responseBody = (SerializableError)result?.Value;
             Assert.That(responseBody, Has.One.With.Property("Key").EqualTo("SomeError"));
             Assert.That(responseBody, Has.One.With.Property("Value").Contains("SomeMessage"));
         }

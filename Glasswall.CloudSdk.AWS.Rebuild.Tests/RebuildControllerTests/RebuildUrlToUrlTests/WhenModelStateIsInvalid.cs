@@ -1,9 +1,7 @@
-﻿using System;
-using System.Net;
-using System.Net.Http;
-using Glasswall.CloudSdk.Common.Web.Models;
+﻿using Glasswall.CloudSdk.Common.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
+using System;
 
 namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildUrlToUrlTests
 {
@@ -40,17 +38,17 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildUrl
         [Test]
         public void Bad_Request_Contains_Errors()
         {
-            var result = _result as BadRequestObjectResult;
+            BadRequestObjectResult result = _result as BadRequestObjectResult;
 
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Value, Is.InstanceOf<SerializableError>());
         }
-        
+
         [Test]
         public void Error_Is_Expected()
         {
-            var result = _result as BadRequestObjectResult;
-            var responseBody = (SerializableError)result?.Value;
+            BadRequestObjectResult result = _result as BadRequestObjectResult;
+            SerializableError responseBody = (SerializableError)result?.Value;
             Assert.That(responseBody, Has.One.With.Property("Key").EqualTo("SomeError"));
             Assert.That(responseBody, Has.One.With.Property("Value").Contains("SomeMessage"));
         }

@@ -10,7 +10,7 @@ namespace Glasswall.Core.Engine.Common
     [ExcludeFromCodeCoverage]
     [DataContract(Namespace = "")]
     public class config
-    { 
+    {
         [DataMember]
         public pdfConfig pdfConfig { get; set; }
         [DataMember]

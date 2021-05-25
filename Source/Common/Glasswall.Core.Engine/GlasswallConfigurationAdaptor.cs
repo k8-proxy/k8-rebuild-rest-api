@@ -1,34 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Glasswall.Core.Engine.Common;
+using Glasswall.Core.Engine.Common.PolicyConfig;
+using System;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
-using Glasswall.Core.Engine.Common;
-using Glasswall.Core.Engine.Common.PolicyConfig;
 
 namespace Glasswall.Core.Engine
 {
-    public class GlasswallConfigurationAdaptor: IAdaptor<ContentManagementFlags, string>
+    public class GlasswallConfigurationAdaptor : IAdaptor<ContentManagementFlags, string>
     {
         public string Adapt(ContentManagementFlags contentManagementFlags)
         {
-            if (contentManagementFlags == null) throw new ArgumentNullException(nameof(contentManagementFlags));
-            if (contentManagementFlags.PdfContentManagement == null) throw new ArgumentNullException(nameof(contentManagementFlags.PdfContentManagement));
-            if (contentManagementFlags.WordContentManagement == null) throw new ArgumentNullException(nameof(contentManagementFlags.WordContentManagement));
-            if (contentManagementFlags.ExcelContentManagement == null) throw new ArgumentNullException(nameof(contentManagementFlags.ExcelContentManagement));
-            if (contentManagementFlags.PowerPointContentManagement == null) throw new ArgumentNullException(nameof(contentManagementFlags.PowerPointContentManagement));
+            if (contentManagementFlags == null)
+            {
+                throw new ArgumentNullException(nameof(contentManagementFlags));
+            }
 
-            var config = CreateConfig(contentManagementFlags);
-            var serializer = new DataContractSerializer(typeof(config));
-            var stringWriter = new Utf8StringWriter();
+            if (contentManagementFlags.PdfContentManagement == null)
+            {
+                throw new ArgumentNullException(nameof(contentManagementFlags.PdfContentManagement));
+            }
 
-            using (var xmlWriter = XmlWriter.Create(stringWriter, new XmlWriterSettings { Encoding = Encoding.UTF8 }))
+            if (contentManagementFlags.WordContentManagement == null)
+            {
+                throw new ArgumentNullException(nameof(contentManagementFlags.WordContentManagement));
+            }
+
+            if (contentManagementFlags.ExcelContentManagement == null)
+            {
+                throw new ArgumentNullException(nameof(contentManagementFlags.ExcelContentManagement));
+            }
+
+            if (contentManagementFlags.PowerPointContentManagement == null)
+            {
+                throw new ArgumentNullException(nameof(contentManagementFlags.PowerPointContentManagement));
+            }
+
+            config config = CreateConfig(contentManagementFlags);
+            DataContractSerializer serializer = new DataContractSerializer(typeof(config));
+            Utf8StringWriter stringWriter = new Utf8StringWriter();
+
+            using (XmlWriter xmlWriter = XmlWriter.Create(stringWriter, new XmlWriterSettings { Encoding = Encoding.UTF8 }))
             {
                 serializer.WriteObject(xmlWriter, config);
             }
 
-            var generatedXmlConfig = stringWriter.ToString();
+            string generatedXmlConfig = stringWriter.ToString();
 
             return generatedXmlConfig;
         }

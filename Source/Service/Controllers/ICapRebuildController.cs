@@ -3,7 +3,6 @@ using Glasswall.CloudSdk.AWS.Rebuild.Services;
 using Glasswall.CloudSdk.Common;
 using Glasswall.CloudSdk.Common.Web.Abstraction;
 using Glasswall.Core.Engine.Common.FileProcessing;
-using Glasswall.Core.Engine.Common.PolicyConfig;
 using Glasswall.Core.Engine.Messaging;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -56,15 +55,21 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
                 Logger.LogInformation("'{0}' method invoked", nameof(RebuildFromFormZipFile));
 
                 if (!ModelState.IsValid)
+                {
                     return BadRequest(ModelState);
+                }
 
                 if (!TryReadFormFile(file, out byte[] fileBytes))
+                {
                     return BadRequest("Input file could not be read.");
+                }
 
                 FileTypeDetectionResponse fileType = await Task.Run(() => DetectFromBytes(fileBytes));
 
                 if (fileType.FileType != FileType.Zip)
+                {
                     return UnprocessableEntity("Input file could not be processed.");
+                }
 
                 string zipFolderName = $"{Guid.NewGuid()}";
                 string protectedZipFolderPath = Path.Combine(tempFolderPath, Guid.NewGuid().ToString());
@@ -120,7 +125,9 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
             finally
             {
                 if (Directory.Exists(tempFolderPath))
+                {
                     Directory.Delete(tempFolderPath, true);
+                }
             }
         }
 
@@ -149,7 +156,9 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Controllers
             foreach (string subdirectory in Directory.GetDirectories(zipFolderPath))
             {
                 if (subdirectory.EndsWith(Constants.MACOSX))
+                {
                     continue;
+                }
 
                 List<IFileProtectResponse> processDirectoryResp = await ProcessDirectory(subdirectory, protectedZipFolderPath);
                 responseList.AddRange(processDirectoryResp);

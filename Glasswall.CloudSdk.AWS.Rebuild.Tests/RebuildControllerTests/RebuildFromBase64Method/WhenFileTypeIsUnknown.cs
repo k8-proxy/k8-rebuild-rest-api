@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
-using Glasswall.CloudSdk.Common;
+﻿using Glasswall.CloudSdk.Common;
 using Glasswall.CloudSdk.Common.Web.Models;
 using Glasswall.Core.Engine.Messaging;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Linq;
 
 namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildFromBase64Method
 {
@@ -16,7 +16,7 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildFro
         private static readonly byte[] ExpectedDecoded = { 116, 101, 115, 116 };
 
         private IActionResult _result;
-        
+
         [OneTimeSetUp]
         public void OnetimeSetup()
         {

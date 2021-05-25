@@ -1,6 +1,6 @@
-using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace Glasswall.CloudSdk.Common
 {
@@ -19,10 +19,12 @@ namespace Glasswall.CloudSdk.Common
 
         public void Record<TMetric>(string metricName, TMetric value)
         {
-            var responseHeaders = _httpContextAccessor.HttpContext.Response.Headers;
+            IHeaderDictionary responseHeaders = _httpContextAccessor.HttpContext.Response.Headers;
 
             if (responseHeaders.ContainsKey(metricName))
+            {
                 return;
+            }
 
             _logger.LogTrace($"Setting header '{metricName}' to value '{value}'");
             responseHeaders.Add(metricName, value?.ToString() ?? "");

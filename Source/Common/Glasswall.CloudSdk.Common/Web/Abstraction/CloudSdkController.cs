@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Flurl.Http;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Flurl.Http;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace Glasswall.CloudSdk.Common.Web.Abstraction
 {
@@ -40,7 +40,7 @@ namespace Glasswall.CloudSdk.Common.Web.Abstraction
                 Logger.LogError(ex, "Could not parse base64 file {0}", base64File);
             }
 
-            var fileSize = file?.Length ?? 0;
+            int fileSize = file?.Length ?? 0;
             MetricService.Record(Metric.Base64DecodeTime, TimeMetricTracker.Elapsed);
             MetricService.Record(Metric.FileSize, fileSize);
             return fileSize > 0;
@@ -54,7 +54,7 @@ namespace Glasswall.CloudSdk.Common.Web.Abstraction
 
             try
             {
-                using var ms = new MemoryStream();
+                using MemoryStream ms = new MemoryStream();
                 formFile.CopyTo(ms);
                 file = ms.ToArray();
             }
@@ -65,7 +65,7 @@ namespace Glasswall.CloudSdk.Common.Web.Abstraction
 
             TimeMetricTracker.Stop();
 
-            var fileSize = formFile?.Length ?? 0;
+            long fileSize = formFile?.Length ?? 0;
             MetricService.Record(Metric.FormFileReadTime, TimeMetricTracker.Elapsed);
             MetricService.Record(Metric.FileSize, fileSize);
             return file?.Length > 0;
@@ -88,7 +88,7 @@ namespace Glasswall.CloudSdk.Common.Web.Abstraction
 
             TimeMetricTracker.Stop();
 
-            var fileSize = file?.Length ?? 0;
+            int fileSize = file?.Length ?? 0;
             MetricService.Record(Metric.DownloadTime, TimeMetricTracker.Elapsed);
             MetricService.Record(Metric.FileSize, fileSize);
             return fileSize > 0;
@@ -97,12 +97,12 @@ namespace Glasswall.CloudSdk.Common.Web.Abstraction
         protected bool TryPutFile(Uri url, byte[] file)
         {
             bool success;
-            
+
             TimeMetricTracker.Restart();
 
             try
             {
-                var response = PutFileAsync(url, file).GetAwaiter().GetResult();
+                HttpResponseMessage response = PutFileAsync(url, file).GetAwaiter().GetResult();
 
                 MetricService.Record(Metric.UploadEtag, response.Headers?.ETag?.Tag);
 
@@ -122,16 +122,16 @@ namespace Glasswall.CloudSdk.Common.Web.Abstraction
 
         private static async Task<byte[]> GetFileAsync(Uri url)
         {
-            var request = new FlurlRequest(url);
-            var response = await request.SendAsync(HttpMethod.Get);
+            FlurlRequest request = new FlurlRequest(url);
+            HttpResponseMessage response = await request.SendAsync(HttpMethod.Get);
 
             return await response.Content.ReadAsByteArrayAsync();
         }
-        
+
         private static async Task<HttpResponseMessage> PutFileAsync(Uri url, byte[] file)
         {
-            var request = new FlurlRequest(url);
-            var response = await request.SendAsync(HttpMethod.Put, new ByteArrayContent(file));
+            FlurlRequest request = new FlurlRequest(url);
+            HttpResponseMessage response = await request.SendAsync(HttpMethod.Put, new ByteArrayContent(file));
 
             return response;
         }
