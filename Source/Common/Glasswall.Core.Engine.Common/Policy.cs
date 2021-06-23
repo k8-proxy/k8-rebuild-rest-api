@@ -1,4 +1,5 @@
 ﻿using Glasswall.Core.Engine.Common.PolicyConfig;
+using System.Collections.Generic;
 
 namespace Glasswall.Core.Engine.Common
 {
@@ -52,7 +53,10 @@ namespace Glasswall.Core.Engine.Common
             },
             TiffContentManagement = new TiffContentManagement
             {
-                Geotiff = ContentManagementFlagAction.Sanitise
+                Geotiff = ContentManagementFlagAction.Sanitise,
+                GeotiffAllowlist = new List<int> { 3072, 3073 },
+                GeotiffDenylist = new List<int> { 2049 },
+                GeotiffRequiredlist = new List<int> { 1024, 1025, 1026 }
             }
         };
     }

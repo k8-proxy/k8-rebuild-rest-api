@@ -1,6 +1,7 @@
 ﻿using Glasswall.Core.Engine.Common;
 using Glasswall.Core.Engine.Common.PolicyConfig;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
@@ -58,7 +59,7 @@ namespace Glasswall.Core.Engine
 
         private config CreateConfig(ContentManagementFlags contentManagementFlags)
         {
-            return new config
+            config config = new config
             {
                 pdfConfig = new pdfConfig
                 {
@@ -107,9 +108,21 @@ namespace Glasswall.Core.Engine
                 tiffConfig = new tiffConfig
                 {
                     geotiff = contentManagementFlags.TiffContentManagement.Geotiff.GetValueOrDefault().ToGlasswallConfigurationContentManagementFlag()
-
                 }
             };
+
+            GeotiffList geotiffList = new GeotiffList();
+            geotiffList.AddRange(contentManagementFlags.TiffContentManagement.GeotiffAllowlist);
+            config.tiffConfig.geotiff_allowlist = geotiffList;
+
+            geotiffList = new GeotiffList();
+            geotiffList.AddRange(contentManagementFlags.TiffContentManagement.GeotiffDenylist);
+            config.tiffConfig.geotiff_denylist = geotiffList;
+
+            geotiffList = new GeotiffList();
+            geotiffList.AddRange(contentManagementFlags.TiffContentManagement.GeotiffRequiredlist);
+            config.tiffConfig.geotiff_requiredlist = geotiffList;
+            return config;
         }
     }
 }
