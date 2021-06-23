@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
 // ReSharper disable All
@@ -140,5 +141,17 @@ namespace Glasswall.Core.Engine.Common
     {
         [DataMember]
         public contentManagementFlag geotiff { get; set; }
+        [DataMember]
+        public GeotiffList geotiff_allowlist { get; set; }
+
+        [DataMember]
+        public GeotiffList geotiff_denylist { get; set; }
+
+        [DataMember]
+        public GeotiffList geotiff_requiredlist { get; set; }
     }
+
+    [CollectionDataContract(Namespace = "", ItemName = "geokey_id")]
+    public class GeotiffList : List<int>
+    { }
 }
