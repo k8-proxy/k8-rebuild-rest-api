@@ -878,4 +878,27 @@ components:
                 Specifies the content action for Word Documents Review Comments, valid values:
                 <br/><br/>* `0` - Allow
                 <br/><br/>* `1` - Sanitise (Default)
-                <br/><br/>* `2` - Disallow                   
+                <br/><br/>* `2` - Disallow
+        TiffContentManagement:
+          type: object
+          properties:
+            Geotiff:
+              type: integer
+              enum: [1, 0, 2]
+              description: >
+                Specifies the content action for Word Documents Metadata, valid values:
+                <br/><br/>* `0` - Allow
+                <br/><br/>* `1` - Sanitise (Default)
+                <br/><br/>* `2` - Disallow
+            GeotiffAllowlist:
+              type: array
+              items:
+                type: integer
+            GeotiffDenylist:
+              type: array
+              items:
+                type: integer
+            GeotiffRequiredlist:
+              type: array
+              items:
+                type: integer                                
