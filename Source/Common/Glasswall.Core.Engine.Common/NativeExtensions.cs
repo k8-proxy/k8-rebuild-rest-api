@@ -9,11 +9,14 @@ namespace Glasswall.Core.Engine.Common
         public static unsafe string MarshalNativeToManaged(this IntPtr nativeString)
         {
             if (nativeString == IntPtr.Zero)
-                return (string) null;
+            {
+                return null;
+            }
+
             string stringUni;
             if (Environment.OSVersion.Platform == PlatformID.Unix)
             {
-                uint* numPtr = (uint*) (void*) nativeString;
+                uint* numPtr = (uint*)(void*)nativeString;
                 int num = 0;
                 while (*numPtr != 0U)
                 {
@@ -26,7 +29,9 @@ namespace Glasswall.Core.Engine.Common
                 stringUni = Encoding.UTF32.GetString(numArray);
             }
             else
+            {
                 stringUni = Marshal.PtrToStringUni(nativeString);
+            }
 
             return stringUni;
         }
@@ -34,7 +39,10 @@ namespace Glasswall.Core.Engine.Common
         public static IntPtr MarshalManagedToNative(this string managedString)
         {
             if (managedString == null)
+            {
                 return IntPtr.Zero;
+            }
+
             IntPtr num;
             if (Environment.OSVersion.Platform == PlatformID.Unix)
             {
@@ -44,7 +52,9 @@ namespace Glasswall.Core.Engine.Common
                 Marshal.WriteInt32(num, bytes.Length, 0);
             }
             else
+            {
                 num = Marshal.StringToHGlobalUni(managedString);
+            }
 
             return num;
         }
@@ -52,7 +62,10 @@ namespace Glasswall.Core.Engine.Common
         public static void CleanUpNativeData(this IntPtr nativeString)
         {
             if (!(nativeString != IntPtr.Zero))
+            {
                 return;
+            }
+
             Marshal.FreeHGlobal(nativeString);
         }
     }

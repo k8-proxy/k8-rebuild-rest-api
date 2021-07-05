@@ -1,34 +1,53 @@
-﻿using System;
+﻿using Glasswall.Core.Engine.Common;
+using Glasswall.Core.Engine.Common.PolicyConfig;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
-using Glasswall.Core.Engine.Common;
-using Glasswall.Core.Engine.Common.PolicyConfig;
 
 namespace Glasswall.Core.Engine
 {
-    public class GlasswallConfigurationAdaptor: IAdaptor<ContentManagementFlags, string>
+    public class GlasswallConfigurationAdaptor : IAdaptor<ContentManagementFlags, string>
     {
         public string Adapt(ContentManagementFlags contentManagementFlags)
         {
-            if (contentManagementFlags == null) throw new ArgumentNullException(nameof(contentManagementFlags));
-            if (contentManagementFlags.PdfContentManagement == null) throw new ArgumentNullException(nameof(contentManagementFlags.PdfContentManagement));
-            if (contentManagementFlags.WordContentManagement == null) throw new ArgumentNullException(nameof(contentManagementFlags.WordContentManagement));
-            if (contentManagementFlags.ExcelContentManagement == null) throw new ArgumentNullException(nameof(contentManagementFlags.ExcelContentManagement));
-            if (contentManagementFlags.PowerPointContentManagement == null) throw new ArgumentNullException(nameof(contentManagementFlags.PowerPointContentManagement));
+            if (contentManagementFlags == null)
+            {
+                throw new ArgumentNullException(nameof(contentManagementFlags));
+            }
 
-            var config = CreateConfig(contentManagementFlags);
-            var serializer = new DataContractSerializer(typeof(config));
-            var stringWriter = new Utf8StringWriter();
+            if (contentManagementFlags.PdfContentManagement == null)
+            {
+                throw new ArgumentNullException(nameof(contentManagementFlags.PdfContentManagement));
+            }
 
-            using (var xmlWriter = XmlWriter.Create(stringWriter, new XmlWriterSettings { Encoding = Encoding.UTF8 }))
+            if (contentManagementFlags.WordContentManagement == null)
+            {
+                throw new ArgumentNullException(nameof(contentManagementFlags.WordContentManagement));
+            }
+
+            if (contentManagementFlags.ExcelContentManagement == null)
+            {
+                throw new ArgumentNullException(nameof(contentManagementFlags.ExcelContentManagement));
+            }
+
+            if (contentManagementFlags.PowerPointContentManagement == null)
+            {
+                throw new ArgumentNullException(nameof(contentManagementFlags.PowerPointContentManagement));
+            }
+
+            config config = CreateConfig(contentManagementFlags);
+            DataContractSerializer serializer = new DataContractSerializer(typeof(config));
+            Utf8StringWriter stringWriter = new Utf8StringWriter();
+
+            using (XmlWriter xmlWriter = XmlWriter.Create(stringWriter, new XmlWriterSettings { Encoding = Encoding.UTF8 }))
             {
                 serializer.WriteObject(xmlWriter, config);
             }
 
-            var generatedXmlConfig = stringWriter.ToString();
+            string generatedXmlConfig = stringWriter.ToString();
 
             return generatedXmlConfig;
         }
@@ -40,7 +59,7 @@ namespace Glasswall.Core.Engine
 
         private config CreateConfig(ContentManagementFlags contentManagementFlags)
         {
-            return new config
+            config config = new config
             {
                 pdfConfig = new pdfConfig
                 {
@@ -51,7 +70,8 @@ namespace Glasswall.Core.Engine
                     embedded_files = contentManagementFlags.PdfContentManagement.EmbeddedFiles.GetValueOrDefault().ToGlasswallConfigurationContentManagementFlag(),
                     embedded_images = contentManagementFlags.PdfContentManagement.EmbeddedImages.GetValueOrDefault().ToGlasswallConfigurationContentManagementFlag(),
                     javascript = contentManagementFlags.PdfContentManagement.Javascript.GetValueOrDefault().ToGlasswallConfigurationContentManagementFlag(),
-                    metadata = contentManagementFlags.PdfContentManagement.Metadata.GetValueOrDefault().ToGlasswallConfigurationContentManagementFlag()
+                    metadata = contentManagementFlags.PdfContentManagement.Metadata.GetValueOrDefault().ToGlasswallConfigurationContentManagementFlag(),
+                    watermark = contentManagementFlags.PdfContentManagement.Watermark
                 },
                 pptConfig = new pptConfig
                 {
@@ -84,8 +104,25 @@ namespace Glasswall.Core.Engine
                     metadata = contentManagementFlags.WordContentManagement.Metadata.GetValueOrDefault().ToGlasswallConfigurationContentManagementFlag(),
                     review_comments = contentManagementFlags.WordContentManagement.ReviewComments.GetValueOrDefault().ToGlasswallConfigurationContentManagementFlag(),
                     dynamic_data_exchange = contentManagementFlags.WordContentManagement.DynamicDataExchange.GetValueOrDefault().ToGlasswallConfigurationContentManagementFlag()
+                },
+                tiffConfig = new tiffConfig
+                {
+                    geotiff = contentManagementFlags.TiffContentManagement.Geotiff.GetValueOrDefault().ToGlasswallConfigurationContentManagementFlag()
                 }
             };
+
+            GeotiffList geotiffList = new GeotiffList();
+            geotiffList.AddRange(contentManagementFlags.TiffContentManagement.GeotiffAllowlist);
+            config.tiffConfig.geotiff_allowlist = geotiffList;
+
+            geotiffList = new GeotiffList();
+            geotiffList.AddRange(contentManagementFlags.TiffContentManagement.GeotiffDenylist);
+            config.tiffConfig.geotiff_denylist = geotiffList;
+
+            geotiffList = new GeotiffList();
+            geotiffList.AddRange(contentManagementFlags.TiffContentManagement.GeotiffRequiredlist);
+            config.tiffConfig.geotiff_requiredlist = geotiffList;
+            return config;
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using System.IO;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Moq;
+using System.IO;
 
 namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildFromFormFileMethod
 {
@@ -11,13 +11,13 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildFro
 
         protected Mock<IFormFile> ValidFormFileMock;
         protected Mock<IFormFile> InvalidFormFileMock;
-        
+
         protected override void CommonSetup()
         {
             base.CommonSetup();
 
             ValidFormFileMock = new Mock<IFormFile>();
-            ValidFileBytes = new byte[] {0xDE, 0xAD, 0xBE, 0xEF};
+            ValidFileBytes = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
             InvalidFormFileMock = new Mock<IFormFile>();
 
             ValidFormFileMock.Setup(s => s.FileName)
@@ -26,7 +26,7 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildFro
             ValidFormFileMock.Setup(s => s.CopyTo(It.IsAny<Stream>()))
                     .Callback((Stream ms) =>
                     {
-                        using var source = new MemoryStream(ValidFileBytes);
+                        using MemoryStream source = new MemoryStream(ValidFileBytes);
                         source.CopyTo(ms);
                     });
 

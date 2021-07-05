@@ -1,4 +1,5 @@
 ﻿using Glasswall.Core.Engine.Common.PolicyConfig;
+using System.Collections.Generic;
 
 namespace Glasswall.Core.Engine.Common
 {
@@ -47,7 +48,15 @@ namespace Glasswall.Core.Engine.Common
                 EmbeddedFiles = ContentManagementFlagAction.Sanitise,
                 Acroform = ContentManagementFlagAction.Sanitise,
                 ActionsAll = ContentManagementFlagAction.Sanitise,
-                Javascript = ContentManagementFlagAction.Sanitise
+                Javascript = ContentManagementFlagAction.Sanitise,
+                Watermark = "Glasswall Protected"
+            },
+            TiffContentManagement = new TiffContentManagement
+            {
+                Geotiff = ContentManagementFlagAction.Sanitise,
+                GeotiffAllowlist = new List<int> { 3072, 3073 },
+                GeotiffDenylist = new List<int> { 2049 },
+                GeotiffRequiredlist = new List<int> { 1024, 1025, 1026 }
             }
         };
     }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using Glasswall.CloudSdk.Common;
+﻿using Glasswall.CloudSdk.Common;
 using Glasswall.CloudSdk.Common.Web.Models;
 using Glasswall.Core.Engine.Common;
 using Glasswall.Core.Engine.Common.PolicyConfig;
@@ -11,6 +7,10 @@ using Glasswall.Core.Engine.Messaging;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
 
 namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildUrlToUrlTests
 {

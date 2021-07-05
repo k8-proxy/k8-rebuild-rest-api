@@ -1,5 +1,5 @@
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Hosting;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Glasswall.CloudSdk.AWS.Rebuild
 {

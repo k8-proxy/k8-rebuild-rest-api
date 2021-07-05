@@ -1,6 +1,6 @@
-﻿using System;
-using Glasswall.Core.Engine.Common;
+﻿using Glasswall.Core.Engine.Common;
 using NUnit.Framework;
+using System;
 
 namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildFromFormFileMethod
 {
@@ -13,7 +13,7 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildFro
         public void OnetimeSetup()
         {
             CommonSetup();
-            
+
             GlasswallVersionServiceMock.Setup(s => s.GetVersion())
                 .Throws(_dummyException = new Exception());
         }

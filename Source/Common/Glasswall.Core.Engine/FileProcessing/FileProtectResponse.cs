@@ -15,7 +15,7 @@ namespace Glasswall.Core.Engine.FileProcessing
         {
             get
             {
-                var lower = ErrorMessage.ToLower();
+                string lower = ErrorMessage.ToLower();
                 return lower.Contains("disallow") || lower.Contains("forbidden");
             }
         }

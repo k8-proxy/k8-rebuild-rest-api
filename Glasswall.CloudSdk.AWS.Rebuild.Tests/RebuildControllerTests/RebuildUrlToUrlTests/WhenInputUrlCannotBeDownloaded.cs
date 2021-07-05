@@ -1,12 +1,12 @@
-﻿using System;
-using System.Net;
-using System.Net.Http;
-using Flurl.Http.Testing;
+﻿using Flurl.Http.Testing;
 using Glasswall.CloudSdk.Common;
 using Glasswall.CloudSdk.Common.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Net;
+using System.Net.Http;
 
 namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildUrlToUrlTests
 {
@@ -21,7 +21,7 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildUrl
         public void OnetimeSetup()
         {
             CommonSetup();
-            
+
             _expectedInputUrl = new Uri("https://www.myfileserver.com/myfile.png");
             _expectedOutputUrl = new Uri("https://www.s3bucket.com/buckets/rebuilt/myfile.png");
 
@@ -52,7 +52,7 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildUrl
                 .With.Property(nameof(BadRequestObjectResult.Value))
                 .EqualTo("Input file could not be downloaded."));
         }
-        
+
         [Test]
         public void Metrics_Are_Recorded()
         {

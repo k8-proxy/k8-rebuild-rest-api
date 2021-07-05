@@ -1,6 +1,5 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
 using Glasswall.CloudSdk.AWS.Common.Web;
+using Glasswall.CloudSdk.AWS.Rebuild.Services;
 using Glasswall.CloudSdk.Common;
 using Glasswall.Core.Engine;
 using Glasswall.Core.Engine.Common;
@@ -11,8 +10,11 @@ using Glasswall.Core.Engine.FileProcessing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Glasswall.CloudSdk.AWS.Rebuild
 {
@@ -22,17 +24,22 @@ namespace Glasswall.CloudSdk.AWS.Rebuild
         public Startup(IConfiguration configuration) : base(configuration)
         {
         }
-
         protected override void ConfigureAdditionalServices(IServiceCollection services)
         {
             services.AddSingleton<IMetricService, MetricService>();
             services.AddSingleton<IGlasswallVersionService, GlasswallVersionService>();
             services.AddSingleton<IFileTypeDetector, FileTypeDetector>();
             services.AddSingleton<IFileProtector, FileProtector>();
+            services.AddSingleton<IFileAnalyser, FileAnalyser>();
             services.AddSingleton<IAdaptor<ContentManagementFlags, string>, GlasswallConfigurationAdaptor>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IZipUtility, ZipUtility>();
+            services.Configure<FormOptions>(x =>
+            {
+                x.MultipartBodyLengthLimit = long.MaxValue;
+            });
 
-            var p = (int)Environment.OSVersion.Platform;
+            int p = (int)Environment.OSVersion.Platform;
 
             if ((p == 4) || (p == 6) || (p == 128))
             {
@@ -46,6 +53,7 @@ namespace Glasswall.CloudSdk.AWS.Rebuild
 
         protected override void ConfigureAdditional(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
         }
     }
 }

@@ -1,14 +1,9 @@
-﻿using System;
+﻿using Glasswall.CloudSdk.AWS.Rebuild.Controllers;
+using Microsoft.AspNetCore.Mvc;
+using NUnit.Framework;
+using System;
 using System.Linq;
 using System.Reflection;
-using Glasswall.CloudSdk.AWS.Rebuild.Controllers;
-using Glasswall.CloudSdk.Common;
-using Glasswall.Core.Engine.Common.FileProcessing;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
 
 namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.Signature
 {
@@ -18,7 +13,7 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.Signature
         [Test]
         public void Valid_Arguments_Should_Construct()
         {
-            var attributes = typeof(RebuildController).GetCustomAttributes().ToArray();
+            Attribute[] attributes = typeof(RebuildController).GetCustomAttributes().ToArray();
 
             Assert.That(attributes, Has.Exactly(2).Items);
 

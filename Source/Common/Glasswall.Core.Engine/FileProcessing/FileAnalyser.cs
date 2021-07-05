@@ -1,9 +1,9 @@
-﻿using System;
-using Glasswall.Core.Engine.Common;
+﻿using Glasswall.Core.Engine.Common;
 using Glasswall.Core.Engine.Common.FileProcessing;
 using Glasswall.Core.Engine.Common.GlasswallEngineLibrary;
 using Glasswall.Core.Engine.Common.PolicyConfig;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace Glasswall.Core.Engine.FileProcessing
 {
@@ -14,8 +14,8 @@ namespace Glasswall.Core.Engine.FileProcessing
         private readonly ILogger<FileAnalyser> _logger;
 
         public FileAnalyser(
-            IGlasswallFileOperations glasswallFileOperations, 
-            IAdaptor<ContentManagementFlags, string> glasswallConfigurationAdaptor, 
+            IGlasswallFileOperations glasswallFileOperations,
+            IAdaptor<ContentManagementFlags, string> glasswallConfigurationAdaptor,
             ILogger<FileAnalyser> logger)
         {
             _glasswallFileOperations = glasswallFileOperations ?? throw new ArgumentNullException(nameof(glasswallFileOperations));
@@ -25,26 +25,26 @@ namespace Glasswall.Core.Engine.FileProcessing
 
         public string GetReport(ContentManagementFlags flags, string fileType, byte[] fileBytes)
         {
-            var analysisReport = string.Empty;
-            
-                var glasswallConfiguration = _glasswallConfigurationAdaptor.Adapt(flags);
+            string analysisReport = string.Empty;
 
-                if (glasswallConfiguration == null)
-                {
-                    return analysisReport;
-                }
+            string glasswallConfiguration = _glasswallConfigurationAdaptor.Adapt(flags);
 
-                var setConfigurationEngineOutcome = _glasswallFileOperations.SetConfiguration(glasswallConfiguration);
+            if (glasswallConfiguration == null)
+            {
+                return analysisReport;
+            }
 
-                if (setConfigurationEngineOutcome != EngineOutcome.Success)
-                {
-                    return analysisReport;
-                }
+            EngineOutcome setConfigurationEngineOutcome = _glasswallFileOperations.SetConfiguration(glasswallConfiguration);
 
-                _glasswallFileOperations.AnalyseFile(fileBytes, fileType, out analysisReport);
-                             
+            if (setConfigurationEngineOutcome != EngineOutcome.Success)
+            {
+                return analysisReport;
+            }
 
-            return analysisReport;       
+            _glasswallFileOperations.AnalyseFile(fileBytes, fileType, out analysisReport);
+
+
+            return analysisReport;
         }
     }
 }

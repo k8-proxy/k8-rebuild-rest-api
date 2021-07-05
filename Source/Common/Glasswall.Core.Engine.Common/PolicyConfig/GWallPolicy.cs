@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
 // ReSharper disable All
@@ -10,7 +11,7 @@ namespace Glasswall.Core.Engine.Common
     [ExcludeFromCodeCoverage]
     [DataContract(Namespace = "")]
     public class config
-    { 
+    {
         [DataMember]
         public pdfConfig pdfConfig { get; set; }
         [DataMember]
@@ -19,6 +20,8 @@ namespace Glasswall.Core.Engine.Common
         public xlsConfig xlsConfig { get; set; }
         [DataMember]
         public wordConfig wordConfig { get; set; }
+        [DataMember]
+        public tiffConfig tiffConfig { get; set; }
     }
 
     [ExcludeFromCodeCoverage]
@@ -131,4 +134,24 @@ namespace Glasswall.Core.Engine.Common
         [EnumMember]
         sanitise
     }
+
+    [ExcludeFromCodeCoverage]
+    [DataContract(Namespace = "")]
+    public class tiffConfig
+    {
+        [DataMember]
+        public contentManagementFlag geotiff { get; set; }
+        [DataMember]
+        public GeotiffList geotiff_allowlist { get; set; }
+
+        [DataMember]
+        public GeotiffList geotiff_denylist { get; set; }
+
+        [DataMember]
+        public GeotiffList geotiff_requiredlist { get; set; }
+    }
+
+    [CollectionDataContract(Namespace = "", ItemName = "geokey_id")]
+    public class GeotiffList : List<int>
+    { }
 }

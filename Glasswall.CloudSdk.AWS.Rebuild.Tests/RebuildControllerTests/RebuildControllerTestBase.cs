@@ -1,7 +1,9 @@
 ﻿using Flurl.Http.Testing;
 using Glasswall.CloudSdk.AWS.Rebuild.Controllers;
+using Glasswall.CloudSdk.AWS.Rebuild.Services;
 using Glasswall.CloudSdk.Common;
 using Glasswall.Core.Engine.Common.FileProcessing;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -20,6 +22,8 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests
         protected Mock<IFileProtector> FileProtectorMock;
         protected Mock<IMetricService> MetricServiceMock;
         protected Mock<ILogger<RebuildController>> LoggerMock;
+        protected Mock<IWebHostEnvironment> HostingEnvironmentMock;
+        protected Mock<IZipUtility> ZipUtilityMock;
 
         protected virtual void CommonSetup()
         {
@@ -28,13 +32,16 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests
             FileProtectorMock = new Mock<IFileProtector>();
             MetricServiceMock = new Mock<IMetricService>();
             LoggerMock = new Mock<ILogger<RebuildController>>();
+            HostingEnvironmentMock = new Mock<IWebHostEnvironment>();
 
             ClassInTest = new RebuildController(
                 GlasswallVersionServiceMock.Object,
                 FileTypeDetectorMock.Object,
                 FileProtectorMock.Object,
                 MetricServiceMock.Object,
-                LoggerMock.Object
+                LoggerMock.Object,
+                HostingEnvironmentMock.Object,
+                ZipUtilityMock.Object
             );
 
             HttpTest = new HttpTest();

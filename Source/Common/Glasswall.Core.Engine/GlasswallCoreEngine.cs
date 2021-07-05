@@ -1,8 +1,8 @@
-﻿using System;
-using Glasswall.Core.Engine.Common;
+﻿using Glasswall.Core.Engine.Common;
 using Glasswall.Core.Engine.Common.GlasswallEngineLibrary;
 using Glasswall.Core.Engine.Messaging;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace Glasswall.Core.Engine
 {
@@ -34,23 +34,40 @@ namespace Glasswall.Core.Engine
 
         public EngineOutcome SetConfiguration(string configuration)
         {
-            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+            if (configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
 
             return _glasswallFileOperations.SetConfiguration(configuration);
         }
 
         public EngineOutcome AnalyseFile(byte[] fileContent, string fileType, out string analysisReport)
         {
-            if (fileContent == null) throw new ArgumentNullException(nameof(fileContent));
-            if (fileType == null) throw new ArgumentNullException(nameof(fileType));
+            if (fileContent == null)
+            {
+                throw new ArgumentNullException(nameof(fileContent));
+            }
+
+            if (fileType == null)
+            {
+                throw new ArgumentNullException(nameof(fileType));
+            }
 
             return _glasswallFileOperations.AnalyseFile(fileContent, fileType, out analysisReport);
         }
 
         public EngineOutcome ProtectFile(byte[] fileContent, string fileType, out byte[] protectedFile)
         {
-            if (fileContent == null) throw new ArgumentNullException(nameof(fileContent));
-            if (fileType == null) throw new ArgumentNullException(nameof(fileType));
+            if (fileContent == null)
+            {
+                throw new ArgumentNullException(nameof(fileContent));
+            }
+
+            if (fileType == null)
+            {
+                throw new ArgumentNullException(nameof(fileType));
+            }
 
             return _glasswallFileOperations.ProtectFile(fileContent, fileType, out protectedFile);
         }

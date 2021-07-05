@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using Glasswall.CloudSdk.Common;
+﻿using Glasswall.CloudSdk.Common;
 using Glasswall.CloudSdk.Common.Web.Models;
 using Glasswall.Core.Engine.Common;
 using Glasswall.Core.Engine.Common.PolicyConfig;
@@ -12,6 +7,11 @@ using Glasswall.Core.Engine.Messaging;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildUrlToUrlTests
 {
@@ -24,7 +24,7 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildUrl
         private const string Version = "Some Version";
         private FileTypeDetectionResponse _expectedType;
         private static readonly byte[] ExpectedDownloadFile = { 116, 101, 115, 116 };
-        private static readonly byte[] ExpectedUploadFile = { 116, 101  };
+        private static readonly byte[] ExpectedUploadFile = { 116, 101 };
         private EntityTagHeaderValue _expectedEtag;
 
         [OneTimeSetUp]

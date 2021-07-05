@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Glasswall.Core.Engine.Common.PolicyConfig
 {
@@ -13,14 +12,19 @@ namespace Glasswall.Core.Engine.Common.PolicyConfig
         public static ContentManagementFlags ValidatedOrDefault(this ContentManagementFlags contentManagementFlags)
         {
             if (contentManagementFlags == null)
-                return Policy.DefaultContentManagementFlags;
-
-            foreach (var property in typeof(ContentManagementFlags).GetProperties())
             {
-                if (!property.PropertyType.IsSubclassOf(typeof(ContentManagementFlagsBase))) continue;
+                return Policy.DefaultContentManagementFlags;
+            }
 
-                var inputFlagSection = property.GetValue(contentManagementFlags);
-                var defaultFlagSection = property.GetValue(Policy.DefaultContentManagementFlags);
+            foreach (System.Reflection.PropertyInfo property in typeof(ContentManagementFlags).GetProperties())
+            {
+                if (!property.PropertyType.IsSubclassOf(typeof(ContentManagementFlagsBase)))
+                {
+                    continue;
+                }
+
+                object inputFlagSection = property.GetValue(contentManagementFlags);
+                object defaultFlagSection = property.GetValue(Policy.DefaultContentManagementFlags);
 
                 if (inputFlagSection == null)
                 {
@@ -28,16 +32,18 @@ namespace Glasswall.Core.Engine.Common.PolicyConfig
                 }
                 else
                 {
-                    foreach (var flagProps in
+                    foreach (System.Reflection.PropertyInfo flagProps in
                         inputFlagSection.GetType()
                             .GetProperties()
                             .Where(s => s.PropertyType == typeof(ContentManagementFlagAction?)))
                     {
-                        var inputFlag = flagProps.GetValue(inputFlagSection);
-                        var defaultFlag = flagProps.GetValue(defaultFlagSection);
+                        object inputFlag = flagProps.GetValue(inputFlagSection);
+                        object defaultFlag = flagProps.GetValue(defaultFlagSection);
 
                         if (inputFlag == null)
+                        {
                             flagProps.SetValue(inputFlagSection, defaultFlag);
+                        }
                     }
                 }
             }

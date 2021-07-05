@@ -1,14 +1,6 @@
-﻿using System;
-using System.Linq;
-using Glasswall.CloudSdk.Common;
-using Glasswall.CloudSdk.Common.Web.Models;
-using Glasswall.Core.Engine.Common;
-using Glasswall.Core.Engine.Common.PolicyConfig;
-using Glasswall.Core.Engine.FileProcessing;
-using Glasswall.Core.Engine.Messaging;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
+﻿using Glasswall.CloudSdk.Common.Web.Models;
 using NUnit.Framework;
+using System;
 
 namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildFromBase64Method
 {
@@ -23,7 +15,7 @@ namespace Glasswall.CloudSdk.AWS.Rebuild.Tests.RebuildControllerTests.RebuildFro
         public void OnetimeSetup()
         {
             CommonSetup();
-            
+
             GlasswallVersionServiceMock.Setup(s => s.GetVersion())
                 .Throws(_dummyException = new Exception());
         }

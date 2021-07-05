@@ -6,7 +6,7 @@ namespace Glasswall.Core.Engine.Common.FileProcessing
     public interface ILibraryVersionDetector
     {
         string UnknownVersion { get; }
-    
+
         Task<string> GetVersionAsync(CancellationToken token);
     }
 }

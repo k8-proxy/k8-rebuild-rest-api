@@ -13,7 +13,7 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/react-transition-group": "^4.2.4",
     "@types/swagger-ui-react": "^3.23.1",
-    "copy-to-clipboard": "^3.3.1",
+    "clipboard-polyfill": "^3.0.2",
     "eslint": "^6.8.0",
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-node": "^11.0.0",

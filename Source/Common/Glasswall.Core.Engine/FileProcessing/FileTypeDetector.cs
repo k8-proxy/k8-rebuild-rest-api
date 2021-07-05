@@ -1,8 +1,8 @@
-﻿using System;
-using Glasswall.Core.Engine.Common.FileProcessing;
+﻿using Glasswall.Core.Engine.Common.FileProcessing;
 using Glasswall.Core.Engine.Common.GlasswallEngineLibrary;
 using Glasswall.Core.Engine.Messaging;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace Glasswall.Core.Engine.FileProcessing
 {
@@ -19,9 +19,12 @@ namespace Glasswall.Core.Engine.FileProcessing
 
         public FileTypeDetectionResponse DetermineFileType(byte[] fileBytes)
         {
-            if (fileBytes == null) throw new ArgumentNullException(nameof(fileBytes));
+            if (fileBytes == null)
+            {
+                throw new ArgumentNullException(nameof(fileBytes));
+            }
 
-            var fileType = FileType.Unknown;
+            FileType fileType = FileType.Unknown;
 
             try
             {
