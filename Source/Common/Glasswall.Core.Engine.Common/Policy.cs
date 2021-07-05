@@ -53,10 +53,10 @@ namespace Glasswall.Core.Engine.Common
             },
             TiffContentManagement = new TiffContentManagement
             {
-                Geotiff = ContentManagementFlagAction.Sanitise,
-                GeotiffAllowlist = new List<int> { 3072, 3073 },
-                GeotiffDenylist = new List<int> { 2049 },
-                GeotiffRequiredlist = new List<int> { 1024, 1025, 1026 }
+                Geotiff = ContentManagementFlagAction.Allow,
+                GeotiffAllowlist = new List<int>(),
+                GeotiffDenylist = new List<int>(),
+                GeotiffRequiredlist = new List<int>()
             }
         };
     }
