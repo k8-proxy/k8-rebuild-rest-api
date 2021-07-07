@@ -1,3 +1,6 @@
 [submodule "libs"]
 	path = libs
-	url = https://github.com/filetrust/sdk-rebuild-eval
+	url = https://github.com/filetrust/sdk-rebuild-eval.git
+[submodule "icap"]
+	path = icap
+	url = https://github.com/k8-proxy/mvp-icap-service.git
